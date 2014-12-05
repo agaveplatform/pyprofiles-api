@@ -1,0 +1,10 @@
+beanstalkc
+django
+django-cors-headers
+django-ldapdb
+djangorestframework
+pycrypto
+PyJWT
+python-ldap
+requests
+
