@@ -1,0 +1,26 @@
+  {% extends "base.html" %}
+  <body>
+
+    <div class="container">
+    {% block content %}
+
+      {% if error %}
+      <div class="alert alert-danger" role="alert"> {{ error }} </div>
+      {% endif %}
+
+      {% if account_activated %}
+
+      <div class="alert alert-success" role="alert">
+        Account activated!  Need to create another account? <a href="{% url 'create_account' %}" class="alert-link">Click here</a> to start over.
+      </div>
+
+      {% endif %}
+
+    {% endblock %}
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

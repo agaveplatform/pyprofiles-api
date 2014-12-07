@@ -4,7 +4,7 @@ import random
 from django.conf import settings
 from rest_framework import serializers
 
-from agave_id.common.models import LdapUser
+from agave_id.models import LdapUser
 
 
 class LdapUserSerializer(serializers.ModelSerializer):

@@ -1,23 +1,57 @@
 __author__ = 'jstubbs'
 
-import ldap
 import logging
+
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from agave_id.common.auth import authenticated
-from agave_id.common.error import Error
-from agave_id.common.responses import success_dict, error_dict
-from agave_id.common.models import LdapUser
-from agave_id.common.notifications import create_notification
-from agave_id.common import util
+from common.auth import authenticated
+from common.error import Error
+from common.responses import success_dict, error_dict
+from common.notifications import create_notification
+from agave_id.models import LdapUser
+
+# from service.models import LdapUser
+from agave_id.service import ou
+from agave_id.service import util
 
 from serializers import LdapUserSerializer
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+
+
+class OUs(APIView):
+    def perform_authentication(self, request):
+        # Overriding the authentication performed by Django REST Framework since we are handling it ourselves
+        pass
+
+    @authenticated
+    def get(self, request, format=None):
+        """
+        List OUs in the LDAP db
+        """
+        try:
+            ous = ou.get_ous()
+        except Exception as e:
+            return Response(error_dict(msg="Error retrieving OUs: " + str(e)))
+        # import pdb;pdb.set_trace()
+        return Response(success_dict(msg="Organizational Units retrieved successfully.", result=ous.values()))
+
+    @authenticated
+    def post(self, request, format=None):
+        """
+        Create an OU.
+
+        ou -- (REQUIRED) The organizational unit to create.
+        """
+        try:
+            ou.create_ou(request.POST.get('ou'))
+        except Exception as e:
+            return Response(error_dict(msg="Error trying to create OU: " + str(e)))
+        return Response(success_dict(msg="OU created successfully."))
 
 
 class Users(APIView):

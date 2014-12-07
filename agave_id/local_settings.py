@@ -22,7 +22,7 @@ APP_TENANT_ID = '1'
 # -------------------
 # Whether or not to check the JWT; When this is False, certain features will not be available such as the
 # "me" lookup feature since these features rely on profile information in the JWT.
-CHECK_JWT = True
+CHECK_JWT = False
 
 # Actual header name that will show up in request.META; value depends on APIM configuration, in particular
 # the tenant id specified in api-manager.xml
@@ -50,14 +50,19 @@ WSO2_TID_STR = 'enduserTenantId":"'
 # -------------------
 # These settings tell the users service how to bind to the LDAP db and where to store account records
 
+# Use these settings for the LDAP on localhost running out of docker:
+AUTH_LDAP_BIND_DN='cn=admin,dc=agaveapi'
+AUTH_LDAP_BIND_PASSWORD='p@ssw0rd' # UPDATE FROM STACHE ENTRY
+LDAP_BASE_SEARCH_DN='dc=agaveapi'
+
 # Use these settings for the LDAP hosted on wso2-elb:
-AUTH_LDAP_BIND_DN='uid=admin,ou=system'
-AUTH_LDAP_BIND_PASSWORD='secret' # UPDATE FROM STACHE ENTRY
-LDAP_BASE_SEARCH_DN='o=agaveapi'
+# AUTH_LDAP_BIND_DN='uid=admin,ou=system'
+# AUTH_LDAP_BIND_PASSWORD='secret' # UPDATE FROM STACHE ENTRY
+# LDAP_BASE_SEARCH_DN='o=agaveapi'
 
 # Use these settings for the LDAP hosted on agaveldap:
 # AUTH_LDAP_BIND_DN='cn=Manager, o=agaveapi'
-# AUTH_LDAP_BIND_PASSWORD='secret' # UPDATE FROM STACHE ENTRY
+# AUTH_LDAP_BIND_PASSWORD='cowhands7}mathematics' # UPDATE FROM STACHE ENTRY
 # LDAP_BASE_SEARCH_DN='o=agaveapi'
 
 # Status codes for LDAP:
@@ -79,51 +84,31 @@ TEST_RUNNER = 'testrunner.ByPassableDBDjangoTestSuiteRunner'
 # ----------------------
 # DATABASE CONNECTIVITY
 # ----------------------
-# The services require two databases to operate:
-#   i. A MySQL db for the client data (this should be shared by the APIM instance)
-#   ii. An LDAP db for the user profile data.
 
 DATABASES = {
-    # The 'default' db is the MySQL database.
-    # Use this setting to connect to the APIM db (almost always what you want to do)
+    # Django requires a default db which we leave as the sql-lite default.
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'apimgtdb',
-        'USER': 'superadmin',
-        'PASSWORD': 'password', # UPDATE FROM STACHE ENTRY
-        'HOST': TENANT_HOST,
-        'PORT': '3306',
-        # When running the test suite, when this setting is True, the test runner will not create a
-        # test database. This is required for the clients service tests, since that service relies on
-        # interactions with the APIM instance itself. If the clients service is writing data to a
-        # test db then APIM will not see those data and the tests will fail.
-        'USE_LIVE_FOR_TESTS': True,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'agave_id_sql',
     },
 
-    # It is possible to run the users service, with limited functionality, using a sqlite3 db; use this
-    # setting to do that. Note that the clients service will not be functional in this mode.
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': 'userAppDB',
-    # },
-
-    # The 'ldap' entry is for the LDAP db.
-    # Use this setting to connect to the LDAP hosted on wso2-elb:
+    # Use this setting to connect to the LDAP on localhost:
     'ldap': {
         'ENGINE': 'ldapdb.backends.ldap',
-        'NAME': 'ldap://129.114.60.212:10389',
+        'NAME': 'ldap://localhost:10389',
         'USER': AUTH_LDAP_BIND_DN,
         'PASSWORD': AUTH_LDAP_BIND_PASSWORD,
         'TLS': False,
         'CONNECTION_OPTIONS': {
             ldap.OPT_X_TLS_DEMAND: False,
         }
-     }
+    }
 
-    # Use this setting to connect to the LDAP hosted on agaveldap:
+    # The 'ldap' entry is for the LDAP db.
+    # Use this setting to connect to the LDAP hosted on wso2-elb:
     # 'ldap': {
     #     'ENGINE': 'ldapdb.backends.ldap',
-    #     'NAME': 'ldaps://agaveldap.tacc.utexas.edu:636'',
+    #     'NAME': 'ldap://129.114.60.212:10389',
     #     'USER': AUTH_LDAP_BIND_DN,
     #     'PASSWORD': AUTH_LDAP_BIND_PASSWORD,
     #     'TLS': False,
@@ -131,6 +116,18 @@ DATABASES = {
     #         ldap.OPT_X_TLS_DEMAND: False,
     #     }
     #  }
+
+    # Use this setting to connect to the LDAP hosted on agaveldap:
+    # 'ldap': {
+    #     'ENGINE': 'ldapdb.backends.ldap',
+    #     'NAME': 'ldaps://agaveldap.tacc.utexas.edu:636',
+    #     'USER': AUTH_LDAP_BIND_DN,
+    #     'PASSWORD': AUTH_LDAP_BIND_PASSWORD,
+    #     'TLS': False,
+    #     'CONNECTION_OPTIONS': {
+    #         ldap.OPT_X_TLS_DEMAND: False,
+    #     }
+    # }
 
 
 }

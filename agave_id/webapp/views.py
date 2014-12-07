@@ -7,11 +7,11 @@ from django.db import transaction
 from django.shortcuts import render_to_response
 from django.views.decorators.http import require_GET, require_http_methods
 
-from agave_id.common.models import LdapUser
-from agave_id.common.util import audit_ldap_user, create_ldap_user, get_email_message, populate_context, save_ldap_user
-from agave_id.common.error import Error
-from agave_id.common.notifications import create_notification
-from agave_id.common.responses import error_response
+from agave_id.models import LdapUser
+from service.util import audit_ldap_user, create_ldap_user, get_email_message, populate_context, save_ldap_user
+from common.error import Error
+from common.notifications import create_notification
+from common.responses import error_response
 
 KEY = '93z3hgk19pwa74m2'
 

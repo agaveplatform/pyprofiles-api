@@ -140,16 +140,17 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'usersApp.urls'
+ROOT_URLCONF = 'agave_id.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'usersApp.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(CURRENT_DIR, 'templates'),
+    os.path.join(CURRENT_DIR, 'webapp', 'templates'),
 )
 
 LOGIN_URL = 'login'
@@ -194,7 +195,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'usersApp': {
+        'agave_id': {
             'handlers': ['console', 'null'],
             'propagate': True,
             'level': 'DEBUG',

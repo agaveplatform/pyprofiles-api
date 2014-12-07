@@ -41,3 +41,20 @@ class LdapUser(ldapdb.models.Model):
 
     def __unicode__(self):
         return self.full_name
+
+
+class LdapOU(ldapdb.models.Model):
+    """
+    Class for representing an LDAP organizational unit.
+    """
+    # LDAP meta-data
+    base_dn = settings.LDAP_BASE_SEARCH_DN
+    object_classes = ['organizationalUnit']
+
+    ou = CharField(db_column='ou', blank=True, primary_key=True)
+
+    def __str__(self):
+        return self.ou
+
+    def __unicode__(self):
+        return self.ou

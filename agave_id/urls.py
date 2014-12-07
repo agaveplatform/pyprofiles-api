@@ -16,22 +16,14 @@ urlpatterns = patterns('',
     url(r'^user/validate', webapp_views.user_validate, name='user_validate'),
 
     # rest API:
-    url(r'clients/v2/(?P<client_name>.*[^/])/subscriptions/$', service_views.ClientSubscriptions.as_view(),
-        name='client_subscriptions'),
-    url(r'clients/v2/(?P<client_name>.*[^/])/subscriptions$', service_views.ClientSubscriptions.as_view()),
-
-    url(r'clients/v2/(?P<client_name>.*[^/])/$', service_views.ClientDetails.as_view()),
-    url(r'clients/v2/(?P<client_name>.*[^/])$', service_views.ClientDetails.as_view(), name='client_details'),
-
-    url(r'clients/v2/', service_views.Clients.as_view(), name='clients'),
-    url(r'clients/v2', service_views.Clients.as_view()),
-
     url(r'users/(?P<username>.*[^/])/$', service_views.UserDetails.as_view()),
     url(r'users/(?P<username>.*[^/])$', service_views.UserDetails.as_view()),
 
     url(r'users/$', service_views.Users.as_view()),
     url(r'users$', service_views.Users.as_view()),
 
+    url(r'ous/$', service_views.OUs.as_view()),
+    url(r'ous$', service_views.OUs.as_view()),
     # admin -- uncomment to activate
     # (r'^admin/', include(admin.site.urls)),
 )

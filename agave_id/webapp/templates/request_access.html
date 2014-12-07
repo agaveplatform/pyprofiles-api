@@ -1,0 +1,27 @@
+  {% extends "base.html" %}
+  <body>
+
+    <div class="container">
+    {% block content %}
+
+      <h1>Sample File Access Application</h1>
+
+      <h2> Welcome {{username}} </h2>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Let Us Access Your Files</h3>
+        </div>
+        <div class="panel-body">
+          <p>If you agree to share your files, please click the link below and follow the instructions.</p>
+          <p><a href="{{oauth_url}}">Grant Access To Files </a></p>
+        </div>
+      </div>
+
+    {% endblock %}
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

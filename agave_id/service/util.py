@@ -2,14 +2,17 @@ __author__ = 'jstubbs'
 
 import logging
 import json
-import ldap
 import random
+import sys;
 
+import ldap
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from error import Error
-from models import LdapUser
+from common.error import Error
+
+print(sys.path)
+from agave_id.models import LdapUser
 
 logger = logging.getLogger(__name__)
 
