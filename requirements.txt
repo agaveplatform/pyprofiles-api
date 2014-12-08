@@ -7,4 +7,4 @@ pycrypto
 PyJWT
 python-ldap
 requests
--e git+git@bitbucket.org:jstubbs/agave_common.git#egg=agave_common
+-e git+https://jstubbs@bitbucket.org/jstubbs/agave_common.git#egg=agave_common
