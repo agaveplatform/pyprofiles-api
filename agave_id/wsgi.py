@@ -15,8 +15,12 @@ framework.
 """
 import os
 import sys
-sys.path.pop(0)
-sys.path.append(os.path.abspath(os.path.join(os.getcwd(),'..')))
+HERE = os.path.dirname(os.path.realpath(__file__))
+for idx, p in enumerate(sys.path):
+    if p == HERE:
+        sys.path.pop(idx)
+
+sys.path.append(os.path.abspath(os.path.join(HERE,'..')))
 # sys.path.append(os.getcwd())
 # sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'service')))
 # sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'webapp')))
