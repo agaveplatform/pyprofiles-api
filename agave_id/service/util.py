@@ -15,9 +15,9 @@ from agave_id.models import LdapUser
 
 logger = logging.getLogger(__name__)
 
-TENANTS = {'araport-org': {'base_dn':'ou=tenantaraport-org' + settings.LDAP_BASE_SEARCH_DN},
-           'vdj-org': {'base_dn':'ou=tenant5' + settings.LDAP_BASE_SEARCH_DN},
-           'irec': {'base_dn':'ou=tenantirec' + settings.LDAP_BASE_SEARCH_DN},
+TENANTS = {'araport-org': {'base_dn':'ou=tenantaraport-org,' + settings.LDAP_BASE_SEARCH_DN},
+           'vdj-org': {'base_dn':'ou=tenant5,' + settings.LDAP_BASE_SEARCH_DN},
+           'irec': {'base_dn':'ou=tenantirec,' + settings.LDAP_BASE_SEARCH_DN},
            }
 
 def audit_ldap_user(user):
@@ -135,15 +135,19 @@ def populate_context(user, c={}):
     c['last_name'] = user.last_name
     return c
 
-def get_tenant_id(request):
-    """
-    Return the tenant_id associated with this request
-    """
-    return None
-
-def get_base_dn(request):
+def get_base_dn(tenant):
     """
     Return the base_dn for this tenant
     """
-    tenant_id = get_tenant_id(request)
-    return TENANTS.get(tenant_id).get('base_dn')
+    # see if tenant is in special dictionary defined above:
+    if TENANTS.get(tenant):
+        return TENANTS.get(tenant).get('base_dn')
+    # otherwise, build it in the obvious way:
+    else:
+        return 'ou=tenant' + str(tenant) + ',' + settings.LDAP_BASE_SEARCH_DN
+
+
+def multi_tenant_setup(tenant):
+    if not tenant:
+        raise Error("Tenant-id required.")
+    LdapUser.base_dn = get_base_dn(tenant)

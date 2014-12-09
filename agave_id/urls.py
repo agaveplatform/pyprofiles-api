@@ -16,6 +16,21 @@ urlpatterns = patterns('',
     url(r'^user/validate', webapp_views.user_validate, name='user_validate'),
 
     # rest API:
+
+    # multi-tenant URLs:
+    url(r'(?P<tenant>.*[^/])/users/(?P<username>.*[^/])/$', service_views.UserDetails.as_view()),
+    url(r'users/(?P<username>.*[^/])$', service_views.UserDetails.as_view()),
+
+    url(r'(?P<tenant>.*[^/])/users/$', service_views.Users.as_view()),
+    url(r'(?P<tenant>.*[^/])/users$', service_views.Users.as_view()),
+
+    url(r'(?P<tenant>.*[^/])/profiles/v2/(?P<username>.*[^/])/$', service_views.UserDetails.as_view()),
+    url(r'(?P<tenant>.*[^/])/profiles/v2/(?P<username>.*[^/])$', service_views.UserDetails.as_view()),
+
+    url(r'(?P<tenant>.*[^/])/profiles/v2/$', service_views.Users.as_view()),
+    url(r'(?P<tenant>.*[^/])/profiles/v2$', service_views.Users.as_view()),
+
+    # single tenant URLs:
     url(r'users/(?P<username>.*[^/])/$', service_views.UserDetails.as_view()),
     url(r'users/(?P<username>.*[^/])$', service_views.UserDetails.as_view()),
 

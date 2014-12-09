@@ -5,16 +5,15 @@ service locally. Rename as local_settings.py and update as necessary for a produ
 
 import ldap
 
-# -----------------------------------
-# API MANAGER INSTANCE CONFIGURATION
-# -----------------------------------
-
-# The host name or domain name for the API Manager instance that this instance of the services should
-# communicate with.
-TENANT_HOST = 'agave-staging.tacc.utexas.edu'
-#TENANT_HOST = 'agave-am17-dev.tacc.utexas.edu'
+# --------
+# TENANCY
+# --------
+# Whether or not to run in MULTI-TENANT mode. If True, the service will require a tenant id in the
+# URL. If False, the service will use the APP_TENANT_ID setting below.
+MULTI_TENANT = False
 
 # The ID of the tenant in the LDAP database. This needs to match the userstore configuration in APIM.
+# This setting is only used when the MULTI_TENANT setting is False.
 APP_TENANT_ID = '1'
 
 # --------------------
@@ -37,12 +36,6 @@ USER_ADMIN_ROLE = 'Internal/user-account-manager'
 
 # Whether or not the USER_ADMIN_ROLE before allowing updates to the LDAP db (/users service)
 CHECK_USER_ADMIN_ROLE = True
-
-# These settings are currently only used in the account sign up web application:
-# Deprecated - this is only used for manual testing of resolving the tenant id from the JWT.
-USE_APP_TENANT_ID = True
-# Tenantid key in WSO2 JWT Header:
-WSO2_TID_STR = 'enduserTenantId":"'
 
 
 # -------------------

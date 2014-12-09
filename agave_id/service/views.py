@@ -65,10 +65,13 @@ class Users(APIView):
         pass
 
     @authenticated
-    def get(self, request, format=None):
+    def get(self, request, tenant=None, format=None):
         """
         List all users.
         """
+        if settings.MULTI_TENANT:
+            util.multi_tenant_setup(tenant)
+        print "DN:", LdapUser.base_dn
         users = LdapUser.objects.all()
         serializer = LdapUserSerializer(users, many=True)
         for user in serializer.data:
@@ -79,7 +82,7 @@ class Users(APIView):
         return Response(success_dict(msg="Users retrieved successfully.", result=serializer.data))
 
     @authenticated
-    def post(self, request, format=None):
+    def post(self, request, tenant=None, format=None):
         """
         Create a new user.
 
@@ -91,6 +94,8 @@ class Users(APIView):
         phone  -- phone number
         mobile_phone  -- mobile phone number
         """
+        if settings.MULTI_TENANT:
+            util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
             return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         serializer = LdapUserSerializer(data=request.DATA)
@@ -120,10 +125,12 @@ class UserDetails(APIView):
         pass
 
     @authenticated
-    def get(self, request, username, format=None):
+    def get(self, request, username, tenant=None, format=None):
         """
         Retrieve user details
         """
+        if settings.MULTI_TENANT:
+            util.multi_tenant_setup(tenant)
         if request.username and username == "me":
             username = request.username
         # LdapUser.base_dn = util.get_base_db(request)
@@ -140,7 +147,7 @@ class UserDetails(APIView):
         return Response(success_dict(result=serializer.data, msg="User details retrieved successfully."))
 
     @authenticated
-    def put(self, request, username, format=None):
+    def put(self, request, username, tenant=None, format=None):
         """
         Update user details
 
@@ -152,6 +159,8 @@ class UserDetails(APIView):
         mobile_phone  -- mobile phone number
 
         """
+        if settings.MULTI_TENANT:
+            util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
             if not username == request.username:
                 create_notification(username, "UPDATED", "jstubbs")
@@ -182,10 +191,12 @@ class UserDetails(APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
     @authenticated
-    def delete(self, request, username, format="json"):
+    def delete(self, request, username, tenant=None, format="json"):
         """
         Delete user
         """
+        if settings.MULTI_TENANT:
+            util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
             if not username == request.username:
                 return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
