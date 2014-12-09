@@ -115,6 +115,10 @@ class Users(APIView):
                                    msg="Error creating user."), status.HTTP_400_BAD_REQUEST)
 
 class UserDetails(APIView):
+    def perform_authentication(self, request):
+        # Overriding the authentication performed by Django REST Framework since we are handling it ourselves
+        pass
+
     @authenticated
     def get(self, request, username, format=None):
         """
