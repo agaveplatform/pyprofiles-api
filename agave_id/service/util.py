@@ -11,7 +11,6 @@ from django.core.urlresolvers import reverse
 
 from common.error import Error
 
-print(sys.path)
 from agave_id.models import LdapUser
 
 logger = logging.getLogger(__name__)
