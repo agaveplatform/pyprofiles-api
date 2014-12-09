@@ -11,7 +11,8 @@ includes features specific to the Agave platform, such as hooks into the Agave N
 The project comes with a fig.yml file for easy deployment locally. The only dependencies are
 docker and Fig. Install each for your platform and then execute:
 
-./bootstrap.sh
+./startup.sh
 
 This will start up two docker containers - one with the agave_id application and one with an
-openldap db.
+openldap db. It will also populate the ldap db with an organizational unit (tenant1) and a test user
+(username jdoe).
