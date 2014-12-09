@@ -1,7 +1,14 @@
 #
-# Tests for the agave_id web service. To run these tests, start up the containers using fig and then
-# run:
-# python manage.py test service
+# Tests for the agave_id web service. To run these tests:
+# 1, start up the containers using the startup.sh script (this requires docker and fig)
+# 2. activate the virtualenv with the requirements installed (this is because the test suite will run
+# on the host, not in the container).
+# 3. Execute:
+#       python manage.py test service
+#
+# NOTE: The test suite tests the mode of the service given by the current settings: if
+# MULTI_TENANT=False, the test suite will exercise the service in single-tenant mode. Otherwise,
+# it will test the service in multi-tenant mode.
 
 
 import os
@@ -30,6 +37,9 @@ logger = logging.getLogger(__name__)
 
 APP_BASE = "http://localhost:8000/"
 APIM_BASE = "https://agave-am17-dev.tacc.utexas.edu/"
+
+if settings.MULTI_TENANT:
+    APP_BASE = APP_BASE + '1/'
 
 class Error(Exception):
     def __init__(self, message=None):
