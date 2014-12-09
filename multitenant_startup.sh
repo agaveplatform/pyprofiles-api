@@ -1,8 +1,5 @@
 #!/bin/bash
 # Just like startup.sh, but adds a couple tenants for testing out the multi-tenant mode of the service.
-# Note that the settings that ship with this project turn off multi-tenant so in order to test use this
-# script you must turn that setting on first and rebuild the agave_id docker image.
-#!/bin/bash
 
 fig -f multifig.yml up -d
 echo "Waiting for services to start..."
