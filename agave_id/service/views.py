@@ -33,6 +33,8 @@ class OUs(APIView):
         """
         List OUs in the LDAP db
         """
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
+            return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         try:
             ous = ou.get_ous()
         except Exception as e:
@@ -47,6 +49,8 @@ class OUs(APIView):
 
         ou -- (REQUIRED) The organizational unit to create.
         """
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
+            return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         try:
             ou.create_ou(request.POST.get('ou'))
         except Exception as e:
