@@ -4,11 +4,15 @@ __author__ = 'jstubbs'
 # Django settings for Agave identity provider project
 import os
 
-# sensitive settings:
+# sensitive settings: first look for 'deployment_settings', then 'local_settings',
+# finally 'local_settings_example' which should always be there
 try:
-    from local_settings import *
+    from deployment_settings import *
 except:
-    pass
+    try:
+        from local_settings import *
+    except:
+        from local_settings_example import *
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DEBUG = DEBUG
@@ -211,8 +215,12 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-# sensitive settings:
+
+# Import the sensitive settings again because the settings.py file may have overwritten some.
 try:
-    from local_settings import *
+    from deployment_settings import *
 except:
-    pass
+    try:
+        from local_settings import *
+    except:
+        from local_settings_example import *
