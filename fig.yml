@@ -2,9 +2,9 @@
 # official image, comment out the "build: ." line and uncomment the image line.
 
 web:
-  build: .
+#  build: .
   # Uncomment the following line (and comment the build line just above) to use the official image:
-#  image: jstubbs/agave_id
+  image: jstubbs/agave_id
   command: python /code/agave_id/agave_id/manage.py runserver 0.0.0.0:8000
   ports:
     - "8000:8000"
