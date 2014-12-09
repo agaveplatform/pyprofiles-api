@@ -51,7 +51,6 @@ def create_ldap_user(username=None,
             attrs = json.loads(attrs)
         except Exception as e:
             raise Error("Invalid payload format")
-    print str(attrs)
     u = LdapUser()
     u.username = username or attrs.get('username')
     logger.debug("create_ldap_user using username: " + str(u.username))
@@ -142,7 +141,7 @@ def get_tenant_id(request):
     """
     return None
 
-def get_base_db(request):
+def get_base_dn(request):
     """
     Return the base_dn for this tenant
     """
