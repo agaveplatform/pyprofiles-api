@@ -1,4 +1,17 @@
+#
+# Tests for the agave_id web service. To run these tests, start up the containers using fig and then
+# run:
+# python manage.py test service
 
+
+import os
+import sys
+APP_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..')
+for idx, p in enumerate(sys.path):
+    if p == APP_DIR:
+        sys.path.pop(idx)
+
+sys.path.append(os.path.abspath(os.path.join(APP_DIR,'..')))
 
 import base64
 import ldap
@@ -9,8 +22,8 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from agave_id.common.models import LdapUser
-from agave_id.common.util import create_ldap_user, save_ldap_user
+from agave_id.models import LdapUser
+from agave_id.service.util import create_ldap_user, save_ldap_user
 
 
 logger = logging.getLogger(__name__)
@@ -30,7 +43,6 @@ class LdapUserTests(APITestCase):
     """
 
     def setUp(self):
-        import os; print "!!! CWD: ", os.getcwd()
         try:
             user = LdapUser.objects.get(username="jdoe123")
             user.delete()
@@ -40,10 +52,11 @@ class LdapUserTests(APITestCase):
             user = LdapUser.objects.get(username="jdoe12345")
             user.delete()
         except Exception as e:
-            print "Exception deleting user: ", str(e)
-            users = LdapUser.objects.all()
-            for user in users:
-                print user.username
+            pass
+            # print "Exception deleting user: ", str(e)
+            # users = LdapUser.objects.all()
+            # for user in users:
+            #     print user.username
         try:
             user = create_ldap_user(username="jdoe12345", password="abcde", email="jdoe12345@test.com")
             save_ldap_user(user=user)
@@ -108,14 +121,14 @@ class LdapUserTests(APITestCase):
         self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
 
-    def test_user_update_pass_too_short(self):
+    def test_user_update_pass_not_too_short(self):
         url = APP_BASE + "users/jdoe12345/"
         data = {"password":"abcd", "email":"jdoe12345@test.com"}
         r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.status_code, 400, "Wrong status code: " + str(r.status_code)
+        self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "error")
-        self.assertEqual(r.data.get("message"), "Password should have a minmum of 5 characters")
+        self.assertEqual(r.data.get("status"), "success")
+        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_prev(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -123,10 +136,10 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         data = {"password":"abcde", "email":"jdoe12345@test.com"}
         r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.status_code, 400, "Wrong status code: " + str(r.status_code)
+        self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "error")
-        self.assertEqual(r.data.get("message"), "invalid reuse of password present in password history", r.content)
+        self.assertEqual(r.data.get("status"), "success")
+        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_prev5(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -141,10 +154,10 @@ class LdapUserTests(APITestCase):
         # should not be able to use a password in the previous 5 passwords (initial + 4 updates)
         data = {"password":"abcde", "email":"jdoe12345@test.com"}
         r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.status_code, 400, "Wrong status code: " + str(r.status_code)
+        self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "error")
-        self.assertEqual(r.data.get("message"), "invalid reuse of password present in password history", r.content)
+        self.assertEqual(r.data.get("status"), "success")
+        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_prev6_ok(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -167,55 +180,23 @@ class LdapUserTests(APITestCase):
         self.assertEqual(r.data.get("status"), "success")
         self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
-    def test_user_update_pass_username_fail1(self):
+    def test_user_update_pass_username_1(self):
         url = APP_BASE + "users/jdoe12345/"
-        # passwords cannot contain the first four or more characters of the username:
+        # passwords can now contain the username:
         data = {"password":"zzjdoe", "email":"jdoe12345@test.com"}
         r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.status_code, 400, "Wrong status code: " + str(r.status_code)
+        self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "error")
-        print r.data.get("message")
-        self.assertEqual(r.data.get("message"), "Password shouldn't contain parts of the username")
+        self.assertEqual(r.data.get("status"), "success")
+        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
-    def test_user_update_pass_username_fail2(self):
+    def test_user_update_pass_username_2(self):
         url = APP_BASE + "users/jdoe12345/"
-        # passwords cannot contain username even if case differs:
+        # passwords can contain username with different case:
         data = {"password":"zzJDOE", "email":"jdoe12345@test.com"}
         r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.status_code, 400, "Wrong status code: " + str(r.status_code)
-                                             + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "error")
-        print r.data.get("message")
-        self.assertEqual(r.data.get("message"), "Password shouldn't contain parts of the username")
-
-    def test_user_update_pass_username_fail3(self):
-        try:
-            user = LdapUser.objects.get(username="api_test4")
-            user.delete()
-        except:
-            pass
-        try:
-            user = create_ldap_user(username="api_test4", password="abcde", email="api_test4@test.com")
-            save_ldap_user(user=user)
-        except Exception as e:
-            raise Error("Unable to set up test db; message: " + str(e.message))
-
-        url = APP_BASE + "users/api_test4/"
-        # this password update fails, even though it doesn't start with the beginning of the username.
-        # the regex being used in the ldap password validator is complicated...
-        data = {"password":"zztest", "email":"jdoe12345@test.com"}
-        r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.status_code, 400, "Wrong status code: " + str(r.status_code)
-                                             + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "error")
-        print r.data.get("message")
-        self.assertEqual(r.data.get("message"), "Password shouldn't contain parts of the username")
-        try:
-            user = LdapUser.objects.get(username="api_test4")
-            user.delete()
-        except:
-            pass
+        self.assertEqual(r.data.get("status"), "success")
+        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_username_ok1(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -266,6 +247,10 @@ class LdapUserTests(APITestCase):
         self.assertEqual(username, "jdoe12345")
 
     def test_get_me_user_details(self):
+        # This test will not pass if the service isn't using the JWT from apim.
+        if not settings.CHECK_JWT:
+            logger.warn("Did not test the 'me' feature since CHECK_JWT was False.")
+            return
         url = APP_BASE + "users/me/"
         r = self.client.get(url, format="json", **self.extra)
         self.assertEqual(r.status_code, 200, "Wrong status code: " + str(r.status_code)
