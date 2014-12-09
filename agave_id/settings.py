@@ -3,6 +3,7 @@ __author__ = 'jstubbs'
 
 # Django settings for Agave identity provider project
 import os
+# from django_auth_ldap.config import LDAPSearch
 
 # sensitive settings: first look for 'deployment_settings', then 'local_settings',
 # finally 'local_settings_example' which should always be there
@@ -32,25 +33,11 @@ DATABASE_ROUTERS = ['ldapdb.router.Router']
 
 # Order matters here - first authentication 'success' sticks.
 AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
+    # 'django_auth_ldap.backend.LDAPBackend',
     # 'django.contrib.auth.backends.ModelBackend',
 )
 
 
-# -------------------
-# LDAP configuration
-# -------------------
-
-# TODO -- Do we need these?
-# AUTH_LDAP_USER_SEARCH = LDAPSearch(LDAP_BASE_SEARCH_DN,
-#     ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
-#
-# # Populate the Django user from the LDAP directory.
-# AUTH_LDAP_USER_ATTR_MAP = {
-#     "first_name": "givenName",
-#     "last_name": "sn",
-#     "email": "mail"
-# }
 
 # ---------------------------
 # EMAIL server configuration
