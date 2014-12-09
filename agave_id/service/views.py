@@ -122,7 +122,7 @@ class UserDetails(APIView):
         """
         if request.username and username == "me":
             username = request.username
-        LdapUser.base_dn = util.get_base_db(request)
+        # LdapUser.base_dn = util.get_base_db(request)
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
