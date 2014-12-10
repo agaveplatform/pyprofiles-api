@@ -134,7 +134,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'agave_id.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'agave_id.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -153,8 +153,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'service',
-    'webapp',
+    'agave_id.service',
+    'agave_id.webapp',
     'django.contrib.admin',
     'rest_framework',
     'corsheaders',
