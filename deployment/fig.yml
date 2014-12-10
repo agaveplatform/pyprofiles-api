@@ -1,13 +1,13 @@
-# The following fig.yml file starts up the agave_id from source. If you would prefer to use the
-# official image, comment out the "build: ." line and uncomment the image line.
+# The following fig.yml file starts up the agave_id service in single-tenant mode. It defaults to
+# using an image, but you can also build from source if you prefer. You will need to endure that
+# MULTI_TENANT=False is set in your local_settings.py file first.
 
 web:
-#  build: .
-  # Uncomment the following line (and comment the build line just above) to use the official image:
   image: jstubbs/agave_id
-  command: python /code/agave_id/agave_id/manage.py runserver 0.0.0.0:8000
+  # Uncomment the following line (and comment the build line just above) to build from source
+#  build: ../
   ports:
-    - "8000:8000"
+    - "8000:80"
   links:
     - db
 

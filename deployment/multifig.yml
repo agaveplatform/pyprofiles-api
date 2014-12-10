@@ -5,10 +5,9 @@
 web:
   image: jstubbs/agave_id_multi
   # Uncomment the following line (and comment the build line just above) to build from source
-#  build: .
-  command: python /code/agave_id/agave_id/manage.py runserver 0.0.0.0:8000
+#  build: ../
   ports:
-    - "8000:8000"
+    - "8000:80"
   links:
     - db
 
