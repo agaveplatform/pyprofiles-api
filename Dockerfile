@@ -22,7 +22,8 @@ ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
 ADD agave_id /code/agave_id/agave_id
-ADD apache2.conf /etc/apache2/sites-enabled/000-default.conf
+ADD deployment/wsgi.load /etc/apache2/mods-available/
+ADD deployment/apache2.conf /etc/apache2/sites-enabled/000-default.conf
 
 EXPOSE 80
 
