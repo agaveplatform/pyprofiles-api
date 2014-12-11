@@ -69,6 +69,7 @@ TEST_RUNNER = 'agave_id.testrunner.ByPassableDBDjangoTestSuiteRunner'
 
 # get the port of the ldap db from the environment:
 import os
+HERE = os.path.dirname(os.path.realpath(__file__))
 try:
     db_name = os.environ['DB_PORT']
     if db_name.startswith('tcp://'):
@@ -82,7 +83,7 @@ DATABASES = {
     # Django requires a default db which we leave as the sql-lite default.
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'agave_id_sql',
+        'NAME': os.path.join(HERE, 'agave_id_sql'),
     },
 
     # Use this setting to connect to an LDAP running in a docker container:
@@ -115,11 +116,23 @@ TENANT_UUID = '0001411570898814'
 APP_BASE = 'http://localhost:8000'
 NEW_ACCOUNT_EMAIL_SUBJECT='New Agave Account Requested'
 NEW_ACCOUNT_FROM = 'do-not-reply@agaveapi.io'
-STATIC_ROOT = '/home/apim/agave-ldap/src/users/static'
+STATIC_ROOT = os.path.join(HERE,'static')
 
 # SMTP - used for the email loop account verification:
 # Run the python smtp server with
 # python -m smtpd -n -c DebuggingServer localhost:1025
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-EMAIL_BASE_URL = 'http://agave-staging.tacc.utexas.edu'
+# run an smtp server reachable by a docker container:
+# python -m smtpd -n -c DebuggingServer 172.17.42.1:1025
+
+if os.path.exists(os.path.join(HERE, 'running_in_docker')):
+    # mail_server = os.environ.get('HOST_IP')
+    mail_server = os.environ.get('HOST_IP') or '172.17.42.1'
+else:
+    mail_server = 'localhost'
+# mail_server = 'localhost'
+mail_server_port = 1025
+
+# print "Using:", mail_server, "on port:", str(mail_server_port)
+EMAIL_HOST = mail_server
+EMAIL_PORT = mail_server_port
+EMAIL_BASE_URL = 'http://localhost:8000'

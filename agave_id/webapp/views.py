@@ -23,6 +23,8 @@ def create_account(request):
     """
     c = {}
     c.update(csrf(request))
+    c['EMAIL_HOST'] = str(settings.EMAIL_HOST)
+    c['EMAIL_PORT'] = str(settings.EMAIL_PORT)
     if request.method == 'GET':
         return render_to_response('create_account.html', c)
     LdapUser.base_dn = ('ou=tenant' + settings.APP_TENANT_ID + ','
