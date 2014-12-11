@@ -10,7 +10,7 @@ import ldap
 # --------
 # Whether or not to run in MULTI-TENANT mode. If True, the service will require a tenant id in the
 # URL. If False, the service will use the APP_TENANT_ID setting below.
-MULTI_TENANT = False
+MULTI_TENANT = True
 
 # The ID of the tenant in the LDAP database. This needs to match the userstore configuration in APIM.
 # This setting is only used when the MULTI_TENANT setting is False.

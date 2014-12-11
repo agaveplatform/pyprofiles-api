@@ -10,6 +10,8 @@ web:
     - "8000:80"
   links:
     - db
+  environment:
+    HOST_IP:
 
 db:
   image: jstubbs/slapd
