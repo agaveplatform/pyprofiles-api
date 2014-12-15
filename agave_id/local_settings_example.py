@@ -10,7 +10,7 @@ import ldap
 # --------
 # Whether or not to run in MULTI-TENANT mode. If True, the service will require a tenant id in the
 # URL. If False, the service will use the APP_TENANT_ID setting below.
-MULTI_TENANT = True
+MULTI_TENANT = False
 
 # The ID of the tenant in the LDAP database. This needs to match the userstore configuration in APIM.
 # This setting is only used when the MULTI_TENANT setting is False.
@@ -55,6 +55,9 @@ ACTIVE_STATUS = 'Active'
 # ------------------------------
 # GENERAL SERVICE CONFIGURATION
 # ------------------------------
+# Base URL of this instance of the service. Used to populate the hyperlinks in the responses.
+APP_BASE = 'http://localhost:8000'
+
 # DEBUG = True turns up logging and causes Django to generate excpetion pages with stack traces and
 # additional information. Should be False in production.
 DEBUG = True
@@ -62,6 +65,7 @@ DEBUG = True
 # With this setting activated, Django will not create test databases for any database which has
 # the USE_LIVE_FOR_TESTS': True setting.
 TEST_RUNNER = 'agave_id.testrunner.ByPassableDBDjangoTestSuiteRunner'
+
 
 # ----------------------
 # DATABASE CONNECTIVITY
@@ -71,12 +75,12 @@ TEST_RUNNER = 'agave_id.testrunner.ByPassableDBDjangoTestSuiteRunner'
 import os
 HERE = os.path.dirname(os.path.realpath(__file__))
 try:
-    db_name = os.environ['DB_PORT']
+    db_name = os.environ['LDAP_PORT']
     if db_name.startswith('tcp://'):
         db_name = 'ldap://' + db_name[6:]
 
 except Exception as e:
-    print "got an exception trying to get DB_PORT: ", str(e)
+    print "got an exception trying to get LDAP_PORT: ", str(e)
     db_name = 'ldap://localhost:10389'
 
 DATABASES = {
@@ -113,7 +117,6 @@ TENANT_UUID = '0001411570898814'
 # WEB APP CONFIGURATION
 # ----------------------
 # These settings are only used when deploying the account sign up web application:
-APP_BASE = 'http://localhost:8000'
 NEW_ACCOUNT_EMAIL_SUBJECT='New Agave Account Requested'
 NEW_ACCOUNT_FROM = 'do-not-reply@agaveapi.io'
 STATIC_ROOT = os.path.join(HERE,'static')

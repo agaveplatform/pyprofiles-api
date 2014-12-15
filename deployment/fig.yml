@@ -2,18 +2,18 @@
 # using an image, but you can also build from source if you prefer. You will need to endure that
 # MULTI_TENANT=False is set in your local_settings.py file first.
 
-web:
+agaveid:
   image: jstubbs/agave_id
   # Uncomment the following line (and comment the build line just above) to build from source
 #  build: ../
   ports:
     - "8000:80"
   links:
-    - db
+    - ldap
   environment:
     HOST_IP:
 
-db:
+ldap:
   image: jstubbs/slapd
   environment:
     - LDAP_DOMAIN=agaveapi
