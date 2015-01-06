@@ -74,14 +74,22 @@ TEST_RUNNER = 'agave_id.testrunner.ByPassableDBDjangoTestSuiteRunner'
 # get the port of the ldap db from the environment:
 import os
 HERE = os.path.dirname(os.path.realpath(__file__))
-try:
-    db_name = os.environ['LDAP_PORT']
-    if db_name.startswith('tcp://'):
-        db_name = 'ldap://' + db_name[6:]
 
-except Exception as e:
-    print "got an exception trying to get LDAP_PORT: ", str(e)
+if os.path.exists(os.path.join(HERE, 'running_in_docker')):
+# first, check to see if links are available (either from fig or directly from docker):
+    if os.environ.get('LDAP_PORT'):
+        db_name = os.environ['LDAP_PORT']
+        if db_name.startswith('tcp://'):
+            db_name = 'ldap://' + db_name[6:]
+    # otherwise, use service discovery:
+    else:
+        # if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
+        tenant_id = os.environ.get('tenant_id', 'dev')
+        db_name = 'ldap.apim.' + tenant_id + '.agave.tacc.utexas.edu'
+else:
     db_name = 'ldap://localhost:10389'
+
+print "Using db_name: ", db_name
 
 DATABASES = {
     # Django requires a default db which we leave as the sql-lite default.
