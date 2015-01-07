@@ -85,7 +85,7 @@ if os.path.exists(os.path.join(HERE, 'running_in_docker')):
     else:
         # if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
         tenant_id = os.environ.get('tenant_id', 'dev')
-        db_name = 'ldap.apim.' + tenant_id + '.agave.tacc.utexas.edu'
+        db_name = 'ldap.apim.' + tenant_id + '.agave.tacc.utexas.edu:389'
 else:
     db_name = 'ldap://localhost:10389'
 
