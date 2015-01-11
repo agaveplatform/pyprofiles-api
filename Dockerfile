@@ -10,6 +10,11 @@ RUN apt-get install -y apache2 apache2-mpm-prefork apache2-utils libexpat1 ssl-c
 RUN apt-get install -y libapache2-mod-wsgi
 
 RUN apt-get install -y lynx
+
+RUN apt-get install -y ldap-utils
+
+ADD deployment/ldap.conf /etc/ldap/ldap.conf
+
 RUN mkdir /code
 ADD requirements.txt /code/
 RUN pip install -r /code/requirements.txt
