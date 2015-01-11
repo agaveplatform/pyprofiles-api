@@ -43,6 +43,12 @@ urlpatterns = patterns('',
     url(r'profiles/v2/$', service_views.Users.as_view()),
     url(r'profiles/v2$', service_views.Users.as_view()),
 
+    url(r'profiles/(?P<username>.*[^/])/$', service_views.UserDetails.as_view()),
+    url(r'profiles/(?P<username>.*[^/])$', service_views.UserDetails.as_view()),
+
+    url(r'profiles/$', service_views.Users.as_view()),
+    url(r'profiles$', service_views.Users.as_view()),
+
     url(r'ous/$', service_views.OUs.as_view()),
     url(r'ous$', service_views.OUs.as_view()),
     # admin -- uncomment to activate
