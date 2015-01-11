@@ -4,6 +4,7 @@ service locally. Rename as local_settings.py and update as necessary for a produ
 """
 
 import ldap
+import os
 
 # --------
 # TENANCY
@@ -14,7 +15,7 @@ MULTI_TENANT = False
 
 # The ID of the tenant in the LDAP database. This needs to match the userstore configuration in APIM.
 # This setting is only used when the MULTI_TENANT setting is False.
-APP_TENANT_ID = '1'
+APP_TENANT_ID = os.environ.get('ldap_tenant_id', '1')
 
 # --------------------
 # JWT Header settings
@@ -44,9 +45,9 @@ CHECK_USER_ADMIN_ROLE = True
 # These settings tell the users service how to bind to the LDAP db and where to store account records
 
 # Use these settings for the LDAP on localhost running out of docker:
-AUTH_LDAP_BIND_DN='cn=admin,dc=agaveapi'
-AUTH_LDAP_BIND_PASSWORD='p@ssword'
-LDAP_BASE_SEARCH_DN='dc=agaveapi'
+AUTH_LDAP_BIND_DN = 'cn=admin,dc=agaveapi'
+AUTH_LDAP_BIND_PASSWORD = 'p@ssword'
+LDAP_BASE_SEARCH_DN = 'dc=agaveapi'
 
 # Status codes for LDAP:
 INACTIVE_STATUS = 'Inactive'
@@ -67,13 +68,29 @@ DEBUG = True
 TEST_RUNNER = 'agave_id.testrunner.ByPassableDBDjangoTestSuiteRunner'
 
 
+# ------------------
+# BEANSTALK INSTANCE
+# ------------------
+BEANSTALK_SERVER = "iplant-qa.tacc.utexas.edu"
+BEANSTALK_PORT = 11300
+BEANSTALK_TUBE = 'test.jfs'
+BEANSTALK_SRV_CODE = '0001-001'
+TENANT_UUID = os.environ.get('tenant_uuid', '0001411570898814')
+
+
 # ----------------------
 # DATABASE CONNECTIVITY
 # ----------------------
 
-# get the port of the ldap db from the environment:
-import os
+# for running in docker, need to get the ldap db connectivity data from the environment:
 HERE = os.path.dirname(os.path.realpath(__file__))
+
+AUTH_LDAP_BIND_DN = os.environ.get('auth_ldap_bind_dn', AUTH_LDAP_BIND_DN)
+AUTH_LDAP_BIND_PASSWORD = os.environ.get('auth_ldap_bind_password', AUTH_LDAP_BIND_PASSWORD)
+LDAP_BASE_SEARCH_DN = os.environ.get('ldap_base_search_dn', LDAP_BASE_SEARCH_DN)
+# if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
+TENANT_ID = os.environ.get('tenant_id', 'dev')
+
 
 if os.path.exists(os.path.join(HERE, 'running_in_docker')):
 # first, check to see if links are available (either from fig or directly from docker):
@@ -83,9 +100,13 @@ if os.path.exists(os.path.join(HERE, 'running_in_docker')):
             db_name = 'ldap://' + db_name[6:]
     # otherwise, use service discovery:
     else:
-        # if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
-        tenant_id = os.environ.get('tenant_id', 'dev')
-        db_name = 'ldap.apim.' + tenant_id + '.agave.tacc.utexas.edu:389'
+        db_name = 'ldap.apim.' + TENANT_ID + '.agave.tacc.utexas.edu:'
+        if os.environ.get('use_ldaps'):
+            db_name = 'ldaps://' + db_name + '636'
+        else:
+            db_name = 'ldap://' + db_name + '389'
+        # alo use service discovery for beastalk:
+        BEANSTALK_SERVER = 'beanstalk.' + TENANT_ID + '.agave.tacc.utexas.edu'
 else:
     db_name = 'ldap://localhost:10389'
 
@@ -110,16 +131,6 @@ DATABASES = {
         }
     },
 }
-
-# ------------------
-# BEANSTALK INSTANCE
-# ------------------
-BEANSTALK_SERVER = "iplant-qa.tacc.utexas.edu"
-BEANSTALK_PORT = 11300
-# BEANSTALK_TUBE = 'default'
-BEANSTALK_TUBE = 'test.jfs'
-BEANSTALK_SRV_CODE = '0001-001'
-TENANT_UUID = '0001411570898814'
 
 # ----------------------
 # WEB APP CONFIGURATION
