@@ -16,8 +16,8 @@ class LdapUser(ldapdb.models.Model):
     Class for representing an LDAP user entry.
     """
     # LDAP meta-data
-    base_dn = 'ou=tenant' + settings.APP_TENANT_ID + ',' + settings.LDAP_BASE_SEARCH_DN
-#     object_classes = ['posixAccount', 'shadowAccount', 'inetOrgPerson']
+    # base_dn = 'ou=tenant' + settings.APP_TENANT_ID + ',' + settings.LDAP_BASE_SEARCH_DN
+    base_dn = settings.LDAP_BASE_SEARCH_DN
     object_classes = ['inetOrgPerson']
 
     # inetOrgPerson
