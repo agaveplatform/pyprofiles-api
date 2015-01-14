@@ -17,16 +17,19 @@ MULTI_TENANT = False
 # This setting is only used when the MULTI_TENANT setting is False.
 APP_TENANT_ID = os.environ.get('ldap_tenant_id', '1')
 
+# Whne true, the services will not make any updates.
+READ_ONLY = os.environ.get('agave_id_read_only', False)
+
 # --------------------
 # JWT Header settings
 # -------------------
 # Whether or not to check the JWT; When this is False, certain features will not be available such as the
 # "me" lookup feature since these features rely on profile information in the JWT.
-CHECK_JWT = False
+CHECK_JWT = os.environ.get('check_jwt', False)
 
 # Actual header name that will show up in request.META; value depends on APIM configuration, in particular
 # the tenant id specified in api-manager.xml
-JWT_HEADER = 'HTTP_JWT_ASSERTION'
+JWT_HEADER = os.environ.get('jwt_header', 'HTTP_JWT_ASSERTION')
 
 # Relative location of the public key of the APIM instance; used for verifying the signature of the JWT.
 #PUB_KEY = 'usersApp/agave-vdjserver-org_pub.txt'
@@ -48,6 +51,10 @@ CHECK_USER_ADMIN_ROLE = True
 AUTH_LDAP_BIND_DN = 'cn=admin,dc=agaveapi'
 AUTH_LDAP_BIND_PASSWORD = 'p@ssword'
 LDAP_BASE_SEARCH_DN = 'dc=agaveapi'
+
+# Set USE_CUSTOM_LDAP = True to use a database with a different schema than the traditional Agave ldap. Some
+# fields are still required, for example the uid field as the primary key.
+USE_CUSTOM_LDAP = os.environ.get('use_custom_ldap', False)
 
 # Status codes for LDAP:
 INACTIVE_STATUS = 'Inactive'
@@ -88,6 +95,14 @@ HERE = os.path.dirname(os.path.realpath(__file__))
 AUTH_LDAP_BIND_DN = os.environ.get('auth_ldap_bind_dn', AUTH_LDAP_BIND_DN)
 AUTH_LDAP_BIND_PASSWORD = os.environ.get('auth_ldap_bind_password', AUTH_LDAP_BIND_PASSWORD)
 LDAP_BASE_SEARCH_DN = os.environ.get('ldap_base_search_dn', LDAP_BASE_SEARCH_DN)
+
+# unless the USE_ALTERNATE_LDAP setting is made, update the search dn for the standard Agave ldap structure:
+print "use_custom_ldap:", str(USE_CUSTOM_LDAP)
+if not USE_CUSTOM_LDAP:
+    LDAP_BASE_SEARCH_DN = 'ou=tenant' + APP_TENANT_ID + ',' + LDAP_BASE_SEARCH_DN
+
+print "using LDAP_BASE_SEARCH_DN:", LDAP_BASE_SEARCH_DN
+
 # if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
 TENANT_ID = os.environ.get('tenant_id', 'dev')
 
