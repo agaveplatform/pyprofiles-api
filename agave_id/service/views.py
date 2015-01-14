@@ -49,6 +49,8 @@ class OUs(APIView):
 
         ou -- (REQUIRED) The organizational unit to create.
         """
+        if settings.READ_ONLY:
+            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
             return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         try:
@@ -94,6 +96,8 @@ class Users(APIView):
         phone  -- phone number
         mobile_phone  -- mobile phone number
         """
+        if settings.READ_ONLY:
+            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
@@ -159,6 +163,8 @@ class UserDetails(APIView):
         mobile_phone  -- mobile phone number
 
         """
+        if settings.READ_ONLY:
+            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
@@ -195,6 +201,8 @@ class UserDetails(APIView):
         """
         Delete user
         """
+        if settings.READ_ONLY:
+            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
