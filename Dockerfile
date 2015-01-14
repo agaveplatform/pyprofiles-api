@@ -35,6 +35,9 @@ RUN chmod o+rw -R /code/agave_id/
 ADD deployment/wsgi.load /etc/apache2/mods-available/
 ADD deployment/apache2.conf /etc/apache2/sites-enabled/000-default.conf
 
+RUN mkdir -p /home/apim/public_keys/
+ADD deployment/apim_default.pub  /home/apim/public_keys/apim_default.pub
+
 EXPOSE 80
 
 CMD /usr/sbin/apache2ctl -D FOREGROUND
