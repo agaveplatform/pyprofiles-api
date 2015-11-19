@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM jstubbs/template_compiler
 MAINTAINER Joe Stubbs
 
 RUN apt-get update
