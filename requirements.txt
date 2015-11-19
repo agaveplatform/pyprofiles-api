@@ -1,5 +1,5 @@
 beanstalkc
-django
+django==1.7
 django-cors-headers
 django-ldapdb
 djangorestframework==2.3.13
