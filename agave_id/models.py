@@ -48,7 +48,9 @@ class LdapOU(ldapdb.models.Model):
     Class for representing an LDAP organizational unit.
     """
     # LDAP meta-data
-    base_dn = settings.LDAP_BASE_SEARCH_DN
+    # this ONLY works in dev (which is the way it should be). Note that base_dn = settings.LDAP_BASE_SEARCH_DN does
+    # NOT work because base_dn = settings.LDAP_BASE_SEARCH_DN now contains the ou!"
+    base_dn = "dc=agaveapi"
     object_classes = ['organizationalUnit']
 
     ou = CharField(db_column='ou', blank=True, primary_key=True)
