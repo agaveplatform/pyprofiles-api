@@ -27,10 +27,10 @@ def create_account(request):
     c['EMAIL_PORT'] = str(settings.EMAIL_PORT)
     if request.method == 'GET':
         return render_to_response('create_account.html', c)
-    LdapUser.base_dn = ('ou=tenant' + settings.APP_TENANT_ID + ','
-                        + settings.LDAP_BASE_SEARCH_DN)
     print str(request.POST.get('username'))
     user = create_ldap_user(attrs=request.POST)
+    user.base_dn = ('ou=tenant' + settings.APP_TENANT_ID + ', '
+                        + settings.LDAP_BASE_SEARCH_DN)
     c = populate_context(user, c)
     try:
         audit_ldap_user(user)
@@ -69,8 +69,6 @@ def user_validate(request):
     """
     username = request.GET.get('username')
     nonce = request.GET.get('nonce')
-    LdapUser.base_dn = ('ou=tenant' + settings.APP_TENANT_ID + ','
-                        + settings.LDAP_BASE_SEARCH_DN)
     try:
         u = LdapUser.objects.get(username=username)
     except Exception as e:
