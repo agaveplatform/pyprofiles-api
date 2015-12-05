@@ -29,8 +29,6 @@ def create_account(request):
         return render_to_response('create_account.html', c)
     print str(request.POST.get('username'))
     user = create_ldap_user(attrs=request.POST)
-    user.base_dn = ('ou=tenant' + settings.APP_TENANT_ID + ', '
-                        + settings.LDAP_BASE_SEARCH_DN)
     c = populate_context(user, c)
     try:
         audit_ldap_user(user)
