@@ -116,6 +116,36 @@ def save_ldap_user(user=None, serializer=None):
         raise Error("Error trying to add user." + " Msg:" + str(e))
     return None
 
+def get_filter(request):
+    """Return filter:value from request query parameters"""
+    filters = ['name', 'email', 'first_name', 'last_name', 'full_name', 'status', 'username', ]
+    for f in filters:
+        if request.GET.get(f):
+            if f == 'name':
+                return {'full_name': request.GET.get(f)}
+            return {f: request.GET.get(f)}
+    return None
+
+
+def get_page_parms(request):
+    """ Return limit and offset based on request."""
+    limit = request.GET.get('limit', -1)
+    try:
+        limit = int(limit)
+    except ValueError:
+        limit = -1
+    if limit < -1:
+        limit = -1
+    offset = request.GET.get('offset', -1)
+    try:
+        offset = int(offset)
+    except ValueError:
+        offset = 0
+    if offset < 0:
+        offset = 0
+    return limit, offset
+
+
 def get_email_message(user):
     """
     Construct activation email message.

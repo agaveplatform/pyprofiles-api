@@ -33,7 +33,7 @@ class OUs(APIView):
         """
         List OUs in the LDAP db
         """
-        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         try:
             ous = ou.get_ous()
@@ -51,7 +51,7 @@ class OUs(APIView):
         """
         if settings.READ_ONLY:
             return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
-        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         try:
             ou.create_ou(request.POST.get('ou'))
@@ -74,14 +74,21 @@ class Users(APIView):
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
         print "DN:", LdapUser.base_dn
-        users = LdapUser.objects.all()
+        filter_dict = util.get_filter(request)
+        if filter_dict:
+            users = LdapUser.objects.filter(**filter_dict)
+        else:
+            users = LdapUser.objects.all()
+        limit, offset = util.get_page_parms(request)
+        if limit > 0:
+            users = users[offset: offset+limit]
         serializer = LdapUserSerializer(users, many=True)
         for user in serializer.data:
             # remove password from data:
             user.pop('password', None)
             # remove unused uid field as well:
             user.pop('uid', None)
-        return Response(success_dict(msg="Users retrieved successfully.", result=serializer.data))
+        return Response(success_dict(msg="Users retrieved successfully.", result=serializer.data, query_dict=request.GET))
 
     @authenticated
     def post(self, request, tenant=None, format=None):
@@ -97,11 +104,11 @@ class Users(APIView):
         mobile_phone  -- mobile phone number
         """
         if settings.READ_ONLY:
-            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
+            return Response(error_dict(msg="Read-only service.", query_dict=request.GET), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
-        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
-            return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
+            return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
         serializer = LdapUserSerializer(data=request.DATA)
         # password only required on POST
         if not request.DATA.get("password"):
@@ -113,15 +120,15 @@ class Users(APIView):
             try:
                 util.save_ldap_user(serializer=serializer)
             except Error as e:
-                return Response(error_dict(msg=e.message), status.HTTP_400_BAD_REQUEST)
+                return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
             serializer.data.pop("create_time", None)
             serializer.data.pop('password', None)
             create_notification(request.DATA.get('username'), "CREATED", "jstubbs")
             return Response(success_dict(msg="User created successfully.",
-                                         result=serializer.data),
+                                         result=serializer.data, query_dict=request.GET),
                             status=status.HTTP_201_CREATED)
         return Response(error_dict(result=serializer.errors,
-                                   msg="Error creating user."), status.HTTP_400_BAD_REQUEST)
+                                   msg="Error creating user.", query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
 
 class UserDetails(APIView):
     def perform_authentication(self, request):
@@ -141,14 +148,14 @@ class UserDetails(APIView):
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
-            return Response(error_dict(msg="Error retrieving user details."), status=status.HTTP_404_NOT_FOUND)
+            return Response(error_dict(msg="Error retrieving user details.", query_dict=request.GET), status=status.HTTP_404_NOT_FOUND)
         serializer = LdapUserSerializer(user)
 
         # remove password from data:
         serializer.data.pop('password', None)
         # remove unused uid field as well
         serializer.data.pop('uid', None)
-        return Response(success_dict(result=serializer.data, msg="User details retrieved successfully."))
+        return Response(success_dict(result=serializer.data, msg="User details retrieved successfully.", query_dict=request.GET))
 
     @authenticated
     def put(self, request, username, tenant=None, format=None):
@@ -164,17 +171,17 @@ class UserDetails(APIView):
 
         """
         if settings.READ_ONLY:
-            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
+            return Response(error_dict(msg="Read-only service.", query_dict=request.GET), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
-        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             if not username == request.username:
                 create_notification(username, "UPDATED", "jstubbs")
-                return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
+                return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
-            return Response(error_dict(msg="Error retrieving user details: account not found."),
+            return Response(error_dict(msg="Error retrieving user details: account not found.", query_dict=request.GET),
                             status=status.HTTP_404_NOT_FOUND)
 
         # we need to add username to the dictionary for serialization, but request.DATA is
@@ -186,14 +193,14 @@ class UserDetails(APIView):
             try:
                 util.save_ldap_user(serializer=serializer)
             except Error as e:
-                return Response(error_dict(msg=e.message), status.HTTP_400_BAD_REQUEST)
+                return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
             #remove password from data:
             serializer.data.pop('password', None)
             return Response(success_dict(result=serializer.data,
-                                         msg="User updated successfully."),
+                                         msg="User updated successfully.", query_dict=request.GET),
                             status=status.HTTP_201_CREATED)
         return Response(error_dict(msg="Error updating user.",
-                                   result=serializer.errors),
+                                   result=serializer.errors, query_dict=request.GET),
                         status=status.HTTP_400_BAD_REQUEST)
 
     @authenticated
@@ -202,17 +209,17 @@ class UserDetails(APIView):
         Delete user
         """
         if settings.READ_ONLY:
-            return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
+            return Response(error_dict(msg="Read-only service.", query_dict=request.GET), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
-        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.wso2_user_admin:
+        if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             if not username == request.username:
-                return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
+                return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
-            return Response(error_dict(msg="Error deleting user: account not found."),
+            return Response(error_dict(msg="Error deleting user: account not found.", query_dict=request.GET),
                             status=status.HTTP_404_NOT_FOUND)
         user.delete()
         create_notification(username, "DELETED", "jstubbs")
-        return Response(success_dict(msg="User deleted successfully."))
+        return Response(success_dict(msg="User deleted successfully.", query_dict=request.GET))
