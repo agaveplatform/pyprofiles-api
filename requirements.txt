@@ -3,6 +3,7 @@ django==1.7
 django-cors-headers
 django-ldapdb
 djangorestframework==2.3.13
+sendgrid-django
 pycrypto
 PyJWT==0.1.9
 python-ldap
