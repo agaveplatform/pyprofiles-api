@@ -2,6 +2,7 @@ __author__ = 'jstubbs'
 
 import logging
 
+from django import db
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
@@ -39,7 +40,8 @@ class OUs(APIView):
             ous = ou.get_ous()
         except Exception as e:
             return Response(error_dict(msg="Error retrieving OUs: " + str(e)))
-        # import pdb;pdb.set_trace()
+        finally:
+            db.close_connection()
         return Response(success_dict(msg="Organizational Units retrieved successfully.", result=ous.values()))
 
     @authenticated
@@ -57,6 +59,8 @@ class OUs(APIView):
             ou.create_ou(request.POST.get('ou'))
         except Exception as e:
             return Response(error_dict(msg="Error trying to create OU: " + str(e)))
+        finally:
+            db.close_connection()
         return Response(success_dict(msg="OU created successfully."))
 
 
@@ -88,6 +92,7 @@ class Users(APIView):
             user.pop('password', None)
             # remove unused uid field as well:
             user.pop('uid', None)
+        db.close_connection()
         return Response(success_dict(msg="Users retrieved successfully.", result=serializer.data, query_dict=request.GET))
 
     @authenticated
@@ -116,11 +121,12 @@ class Users(APIView):
         if request.DATA.get('username') == "me":
             serializer.errors['username'] = ["me is a reserved and cannot be used for a username."]
         if serializer.is_valid():
-
             try:
                 util.save_ldap_user(serializer=serializer)
             except Error as e:
                 return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
+            finally:
+                db.close_connection()
             serializer.data.pop("create_time", None)
             serializer.data.pop('password', None)
             create_notification(request.DATA.get('username'), "CREATED", "jstubbs")
@@ -149,6 +155,8 @@ class UserDetails(APIView):
             user = LdapUser.objects.get(username=username)
         except Exception:
             return Response(error_dict(msg="Error retrieving user details.", query_dict=request.GET), status=status.HTTP_404_NOT_FOUND)
+        finally:
+            db.close_connection()
         serializer = LdapUserSerializer(user)
 
         # remove password from data:
@@ -181,9 +189,9 @@ class UserDetails(APIView):
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
+            db.close_connection()
             return Response(error_dict(msg="Error retrieving user details: account not found.", query_dict=request.GET),
                             status=status.HTTP_404_NOT_FOUND)
-
         # we need to add username to the dictionary for serialization, but request.DATA is
         # immutable for PUT requests from some clients (e.g.curl)
         data = request.DATA.copy()
@@ -194,6 +202,8 @@ class UserDetails(APIView):
                 util.save_ldap_user(serializer=serializer)
             except Error as e:
                 return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
+            finally:
+                db.close_connection()
             #remove password from data:
             serializer.data.pop('password', None)
             return Response(success_dict(result=serializer.data,
@@ -218,8 +228,10 @@ class UserDetails(APIView):
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
+            db.close_connection()
             return Response(error_dict(msg="Error deleting user: account not found.", query_dict=request.GET),
                             status=status.HTTP_404_NOT_FOUND)
         user.delete()
+        db.close_connection()
         create_notification(username, "DELETED", "jstubbs")
         return Response(success_dict(msg="User deleted successfully.", query_dict=request.GET))
