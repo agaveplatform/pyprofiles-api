@@ -1,6 +1,6 @@
 #
 # Tests for the agave_id web service. To run these tests:
-# 1, start up the containers using the startup.sh script (this requires docker and fig)
+# 1, start up the containers using the startup.sh script (this requires docker and docker-compose)
 # 2. activate the virtualenv with the requirements installed (this is because the test suite will run
 # on the host, not in the container).
 # 3. Execute:

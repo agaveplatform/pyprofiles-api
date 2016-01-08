@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fig up -d
+docker_compose up -d
 echo "Waiting for services to start..."
 sleep 5
 echo "Adding tenant1 ou and jdoe user..."
