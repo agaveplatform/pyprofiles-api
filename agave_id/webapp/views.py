@@ -78,7 +78,8 @@ def user_validate(request):
             u.save()
         except Exception as e:
             render_to_response('activation.html',{'error':'Unable to activate account.'})
-        create_notification(username, 'CREATED', 'jstubbs')
+        if settings.CREATE_NOTIFICATIONS:
+            create_notification(username, 'CREATED', 'jstubbs')
         return render_to_response('activation.html',{'account_activated':'true'})
     else:
         return render_to_response('activation.html',{'error':'Invalid token'})
