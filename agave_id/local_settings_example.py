@@ -78,6 +78,7 @@ TEST_RUNNER = 'agave_id.testrunner.ByPassableDBDjangoTestSuiteRunner'
 # ------------------
 # BEANSTALK INSTANCE
 # ------------------
+CREATE_NOTIFICATIONS = True
 BEANSTALK_SERVER = "iplant-qa.tacc.utexas.edu"
 BEANSTALK_PORT = 11300
 BEANSTALK_TUBE = 'test.jfs'

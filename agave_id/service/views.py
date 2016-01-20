@@ -129,7 +129,8 @@ class Users(APIView):
                 db.close_connection()
             serializer.data.pop("create_time", None)
             serializer.data.pop('password', None)
-            create_notification(request.DATA.get('username'), "CREATED", "jstubbs")
+            if settings.CREATE_NOTIFICATIONS:
+                create_notification(request.DATA.get('username'), "CREATED", "jstubbs")
             return Response(success_dict(msg="User created successfully.",
                                          result=serializer.data, query_dict=request.GET),
                             status=status.HTTP_201_CREATED)
@@ -184,7 +185,8 @@ class UserDetails(APIView):
             util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             if not username == request.username:
-                create_notification(username, "UPDATED", "jstubbs")
+                if settings.CREATE_NOTIFICATIONS:
+                    create_notification(username, "UPDATED", "jstubbs")
                 return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = LdapUser.objects.get(username=username)
@@ -233,5 +235,6 @@ class UserDetails(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         user.delete()
         db.close_connection()
-        create_notification(username, "DELETED", "jstubbs")
+        if settings.CREATE_NOTIFICATIONS:
+            create_notification(username, "DELETED", "jstubbs")
         return Response(success_dict(msg="User deleted successfully.", query_dict=request.GET))
