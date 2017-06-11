@@ -5,7 +5,9 @@ RUN apt-get update
 RUN apt-get install -y python python-dev python-pip git
 RUN apt-get install -y libldap2-dev libsasl2-dev
 
-RUN apt-get install -y apache2 apache2-mpm-prefork apache2-utils libexpat1 ssl-cert
+RUN apt-get install -y apache2
+#RUN apt-get install -y apache2-mpm-prefork
+RUN apt-get install -y apache2-utils libexpat1 ssl-cert
 
 RUN apt-get install -y libapache2-mod-wsgi
 

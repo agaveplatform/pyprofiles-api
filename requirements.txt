@@ -1,11 +1,14 @@
 beanstalkc
-django==1.7
+django==1.8
 django-cors-headers
+python-ldap
 django-ldapdb
 djangorestframework==2.3.13
 sendgrid-django
 pycrypto
 PyJWT==0.1.9
-python-ldap
 requests
--e git+https://jstubbs@bitbucket.org/jstubbs/agave_common.git#egg=agave_common
+djangorestframework-camel-case
+djangorestframework-queryfields
+-e git+https://bitbucket.org/deardooley/agave-pycommon.git#egg=agave_pycommon
+gunicorn

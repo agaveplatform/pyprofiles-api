@@ -1,0 +1,28 @@
+# The following docker-compopse.yml file starts up the agave_id service in single-tenant mode. It defaults to
+# using an image, but you can also build from source if you prefer. You will need to endure that
+# MULTI_TENANT=False is set in your local_settings.py file first.
+
+version: '2'
+
+services:
+  ldap:
+    image: jstubbs/slapd
+    environment:
+      - LDAP_DOMAIN=agaveapi
+      - LDAP_ORGANISATION="Agave"
+      - LDAP_ROOTPASS=p@ssword
+    ports:
+      - "10389:389"
+    labels:
+      - "traefik.enable=false"
+
+  beanstalkd:
+    image: agaveapi/beanstalkd:latest
+    command: /usr/bin/beanstalkd -b /var/lib/beanstalkd/binlog
+    hostname: beanstalkd
+    mem_limit: 512m
+    restart: on-failure
+    ports:
+      - '11300:11300'
+    labels:
+      - "traefik.enable=false"

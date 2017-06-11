@@ -10,7 +10,6 @@ from django.conf import settings
 from ldapdb.models.fields import CharField, IntegerField
 import ldapdb.models
 
-
 class LdapUser(ldapdb.models.Model):
     """
     Class for representing an LDAP user entry.
@@ -41,7 +40,6 @@ class LdapUser(ldapdb.models.Model):
 
     def __unicode__(self):
         return self.full_name
-
 
 class LdapOU(ldapdb.models.Model):
     """

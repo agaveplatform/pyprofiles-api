@@ -1,6 +1,6 @@
-from django.test.simple import DjangoTestSuiteRunner
+from django.test.runner import DiscoverRunner
 
-class ByPassableDBDjangoTestSuiteRunner(DjangoTestSuiteRunner):
+class ByPassableDBDjangoTestSuiteRunner(DiscoverRunner):
 
     def setup_databases(self, **kwargs):
         from django.db import connections

@@ -198,6 +198,10 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser', # Any other parsers
+        'rest_framework.parsers.JSONParser',
+    ),
 }
 
 CORS_ORIGIN_ALLOW_ALL = True

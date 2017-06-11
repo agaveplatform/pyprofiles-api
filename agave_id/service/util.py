@@ -8,8 +8,11 @@ import sys;
 import ldap
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db import transaction
 
-from common.error import Error
+from pycommon.error import Error
+from pycommon.util import camel_to_underscore
+from pprint import pprint
 
 from agave_id.models import LdapUser
 
@@ -91,6 +94,7 @@ def save_ldap_user(user=None, serializer=None):
             raise Error("No saver object passed.")
         saver_object = serializer
     try:
+        pprint(vars(saver_object))
         saver_object.save()
     except ldap.ALREADY_EXISTS as e:
         raise Error("username already exists.")
@@ -117,8 +121,20 @@ def save_ldap_user(user=None, serializer=None):
     return None
 
 def get_filter(request):
-    """Return filter:value from request query parameters"""
-    filters = ['name', 'email', 'first_name', 'last_name', 'full_name', 'status', 'username', ]
+    """
+    Return filter:value from request query parameters. Camel case filters are
+    converted to snake case and merged to allow mixing and matching as well as
+    compatibility with legacy service.
+    """
+
+    filters = ['name', 'email', 'first_name', 'last_name', 'full_name','status', 'username']
+
+    # add supor
+    for k in ['fullName', 'firstName', 'lastName']:
+        k = camel_to_underscore(k)
+        if k not in filters:
+            filters.append(k);
+
     for f in filters:
         if request.GET.get(f):
             if f == 'name':
@@ -126,6 +142,11 @@ def get_filter(request):
             return {f: request.GET.get(f)}
     return None
 
+def get_user_profile_uuid(username):
+    return settings.TENANT_UUID + "-" + username + "-" + settings.BEANSTALK_SRV_CODE
+
+def get_user_profile_extended_fields(username):
+    return {}
 
 def get_page_parms(request):
     """ Return limit and offset based on request."""
@@ -181,3 +202,12 @@ def multi_tenant_setup(tenant):
     if not tenant:
         raise Error("Tenant-id required.")
     LdapUser.base_dn = get_base_dn(tenant)
+
+def commit_manually(fn):
+    def _commit_manually(*args, **kwargs):
+        transaction.set_autocommit(False)
+        res = fn(*args, **kwargs)
+        transaction.commit()
+        transaction.set_autocommit(True)
+        return res
+    return _commit_manually

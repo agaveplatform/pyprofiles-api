@@ -66,7 +66,7 @@ ACTIVE_STATUS = 'Active'
 # Base URL of this instance of the service. Used to populate the hyperlinks in the responses.
 APP_BASE = 'http://localhost:8000'
 
-# DEBUG = True turns up logging and causes Django to generate excpetion pages with stack traces and
+# DEBUG = True turns up logging and causes Django to generate exception pages with stack traces and
 # additional information. Should be False in production.
 DEBUG = True
 
@@ -105,7 +105,13 @@ if not USE_CUSTOM_LDAP:
 print "using LDAP_BASE_SEARCH_DN:", LDAP_BASE_SEARCH_DN
 
 # if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
-TENANT_ID = os.environ.get('tenant_id', 'dev')
+TENANT_ID = os.environ.get('AGAVE_DEDICATED_TENANT_ID')
+if not TENANT_ID:
+    TENANT_ID = os.environ.get('tenant_id', 'dev.staging')
+
+API_VERSION = os.environ.get('AGAVE_API_VERSION')
+if not API_VERSION:
+    API_VERSION = os.environ.get('api_version', '2.2.0-r5daaf3f')
 
 
 if os.path.exists(os.path.join(HERE, 'running_in_docker')):
@@ -153,7 +159,7 @@ DATABASES = {
 # ----------------------
 # These settings are only used when deploying the account sign up web application:
 NEW_ACCOUNT_EMAIL_SUBJECT='New Agave Account Requested'
-NEW_ACCOUNT_FROM = 'do-not-reply@agaveapi.io'
+NEW_ACCOUNT_FROM = 'no-reply@agaveapi.co'
 STATIC_ROOT = os.path.join(HERE,'static')
 
 # SMTP - used for the email loop account verification:

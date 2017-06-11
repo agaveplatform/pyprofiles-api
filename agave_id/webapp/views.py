@@ -1,3 +1,7 @@
+from pycommon.notifications import create_generic_notification
+
+from serializers import LdapUserSerializer
+
 __author__ = 'jstubbs'
 
 from django.conf import settings
@@ -8,15 +12,16 @@ from django.shortcuts import render_to_response
 from django.views.decorators.http import require_GET, require_http_methods
 
 from agave_id.models import LdapUser
-from agave_id.service.util import audit_ldap_user, create_ldap_user, get_email_message, populate_context, save_ldap_user
-from common.error import Error
-from common.notifications import create_notification
-from common.responses import error_response
+from agave_id.service.util import audit_ldap_user, create_ldap_user, get_email_message, populate_context, save_ldap_user, commit_manually
+from pycommon.error import Error
+from pycommon.notifications import create_notification
+from pycommon.responses import error_response
+
 
 KEY = '93z3hgk19pwa74m2'
 
 @require_http_methods(["GET", "POST"])
-@transaction.commit_manually
+@commit_manually
 def create_account(request):
     """
     View to handle account creation in web app.
@@ -41,6 +46,13 @@ def create_account(request):
     try:
         user.password = user.password + KEY + user.nonce
         save_ldap_user(user=user)
+
+        # Send notification of the created user. Note that a separate activated notification will
+        # be sent once the account is activated
+        if settings.CREATE_NOTIFICATIONS:
+            serializer = LdapUserSerializer(user)
+            create_generic_notification(user.username, 'ACTIVATED', user.username, serializer.data)
+
     except Error as e:
         c['error'] = e.message
         return render_to_response("create_account.html", c)
@@ -79,7 +91,9 @@ def user_validate(request):
         except Exception as e:
             render_to_response('activation.html',{'error':'Unable to activate account.'})
         if settings.CREATE_NOTIFICATIONS:
-            create_notification(username, 'CREATED', 'jstubbs')
+            serializer = LdapUserSerializer(u)
+            create_generic_notification(username, 'ACTIVATED', username, serializer.data)
+
         return render_to_response('activation.html',{'account_activated':'true'})
     else:
         return render_to_response('activation.html',{'error':'Invalid token'})

@@ -8,10 +8,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from common.auth import authenticated
-from common.error import Error
-from common.responses import success_dict, error_dict
-from common.notifications import create_notification
+from pycommon.auth import authenticated
+from pycommon.error import Error
+from pycommon.responses import success_dict, error_dict
+from pycommon.notifications import create_notification, create_generic_notification
 from agave_id.models import LdapUser
 
 # from service.models import LdapUser
@@ -51,18 +51,23 @@ class OUs(APIView):
 
         ou -- (REQUIRED) The organizational unit to create.
         """
+
         if settings.READ_ONLY:
             return Response(error_dict(msg="Read-only service."), status=status.HTTP_400_BAD_REQUEST)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             return Response(error_dict(msg="Access denied."), status=status.HTTP_401_UNAUTHORIZED)
         try:
             ou.create_ou(request.POST.get('ou'))
+            if settings.CREATE_NOTIFICATIONS:
+                ou_uuid = settings.TENANT_UUID + "-" + ou + "-" + settings.BEANSTALK_SRV_CODE
+                ou_body = { "name": ou, "uuid":ou_uuid }
+                create_generic_notification(ou_uuid, "CREATED", request.username, ou_body, settings.TENANT_ID)
+
         except Exception as e:
             return Response(error_dict(msg="Error trying to create OU: " + str(e)))
         finally:
             db.close_connection()
         return Response(success_dict(msg="OU created successfully."))
-
 
 class Users(APIView):
 
@@ -129,8 +134,12 @@ class Users(APIView):
                 db.close_connection()
             serializer.data.pop("create_time", None)
             serializer.data.pop('password', None)
+
+            # New user is activated right away when created via the API
             if settings.CREATE_NOTIFICATIONS:
-                create_notification(request.DATA.get('username'), "CREATED", "jstubbs")
+                create_notification(request.DATA.get('username'), "CREATED",  request.username, serializer.data)
+                create_notification(request.DATA.get('username'), "ACTIVATED", request.username, serializer.data)
+
             return Response(success_dict(msg="User created successfully.",
                                          result=serializer.data, query_dict=request.GET),
                             status=status.HTTP_201_CREATED)
@@ -185,9 +194,7 @@ class UserDetails(APIView):
             util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             if not username == request.username:
-                if settings.CREATE_NOTIFICATIONS:
-                    create_notification(username, "UPDATED", "jstubbs")
-                return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
+               return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = LdapUser.objects.get(username=username)
         except Exception:
@@ -208,6 +215,11 @@ class UserDetails(APIView):
                 db.close_connection()
             #remove password from data:
             serializer.data.pop('password', None)
+            # add user uuid for use in the notification
+
+            if settings.CREATE_NOTIFICATIONS:
+                create_generic_notification(username, "UPDATED", request.username, serializer.data)
+
             return Response(success_dict(result=serializer.data,
                                          msg="User updated successfully.", query_dict=request.GET),
                             status=status.HTTP_201_CREATED)
@@ -233,8 +245,33 @@ class UserDetails(APIView):
             db.close_connection()
             return Response(error_dict(msg="Error deleting user: account not found.", query_dict=request.GET),
                             status=status.HTTP_404_NOT_FOUND)
-        user.delete()
-        db.close_connection()
+
+        data = {}
+
         if settings.CREATE_NOTIFICATIONS:
-            create_notification(username, "DELETED", "jstubbs")
+            serializer = LdapUserSerializer(user)
+
+            # remove password from data:
+            serializer.data.pop('password', None)
+            # remove unused uid field as well
+            serializer.data.pop('uid', None)
+
+            # add user uuid for use in the notification
+            serializer.data.push('uuid', build_profile_uuid(username))
+
+            data = serializer.data
+
+        try:
+            user.delete()
+        except Exception:
+            errorMessage = "Error deleting user: ldap server rejected deleting " + user
+            logging.error(errorMessage)
+            return Response(error_dict(msg=errorMessage, query_dict=request.GET),
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        finally:
+            db.close_connection()
+
+        if settings.CREATE_NOTIFICATIONS:
+            create_notification(username, "DELETED", request.username, serializer.data)
+
         return Response(success_dict(msg="User deleted successfully.", query_dict=request.GET))
