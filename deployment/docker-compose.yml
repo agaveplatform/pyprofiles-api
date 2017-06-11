@@ -1,0 +1,31 @@
+# The following docker-compopse.yml file starts up the agave_id service in single-tenant mode. It defaults to
+# using an image, but you can also build from source if you prefer. You will need to endure that
+# MULTI_TENANT=False is set in your local_settings.py file first.
+
+version: '2'
+
+services:
+  agaveid:
+    #image: jstubbs/agave_id
+    # Uncomment the following line (and comment the build line just above) to build from source
+    build: ../
+    ports:
+      - "8000:80"
+    depends_on:
+      - ldap
+      - beanstalkd
+    environment:
+      HOST_IP:
+    labels:
+      - traefik.frontend.rule=Host:api.example.com;PathPrefix:/profiles
+      - traefik.backend=pyprofiles
+
+  ldap:
+    extends:
+      file: third-party.yml
+      service: ldap
+
+  beanstalkd:
+    extends:
+        file: common.yml
+        service: java_api
