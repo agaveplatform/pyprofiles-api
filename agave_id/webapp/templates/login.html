@@ -1,0 +1,36 @@
+  {% extends "base.html" %}
+  <body>
+
+    <div class="container">
+    {% block content %}
+      {% if error %}
+      <div class="alert alert-danger" role="alert"> {{ error }} </div>
+      {% endif %}
+
+      {% if account_created %}
+
+      <div class="alert alert-success" role="alert">
+        Account created!  An email will be sent shortly to the email address you registered when creating your account. Click the link in that email to activate your account.
+      </div>
+
+      {% else %}
+      <form class="form-signin create_account" id="login" role="form" action="login">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Login</h2>
+        <input type="text" class="form-control" placeholder="Username" required autofocus name="username" maxlength="50">
+        <input type="password" class="form-control" placeholder="Password" required name="password" maxlength="50">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" name="Submit">Sign up</button>
+        <p>New user? <a href="{% url 'create_account' %}">Create an Account</a></p>
+        </div>
+      </form>
+
+      {% endif %}
+
+    {% endblock %}
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

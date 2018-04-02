@@ -1,0 +1,8 @@
+# Working directly with the local ldap
+# use the included admin account to bind:
+
+# all records:
+ldapsearch -H ldap://localhost:10389 -D "cn=admin,dc=agaveapi" -w "p@ssword" -b "dc=agaveapi"
+
+# all in a specific ou
+ldapsearch -H ldap://localhost:10389 -D "cn=admin,dc=agaveapi" -w "p@ssword" -b "ou=tenant1,dc=agaveapi"

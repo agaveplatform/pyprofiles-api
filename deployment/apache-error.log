@@ -1,0 +1,136 @@
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:15:36.574853 2018] [wsgi:warn] [pid 9:tid 139625295583104] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:15:36.574978 2018] [wsgi:warn] [pid 9:tid 139625295583104] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:15:36.575582 2018] [mpm_event:notice] [pid 9:tid 139625295583104] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:15:36.575598 2018] [core:notice] [pid 9:tid 139625295583104] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:15:40.838422 2018] [wsgi:error] [pid 11:tid 139625189295872] use_custom_ldap: False
+[Mon Apr 02 18:15:40.838460 2018] [wsgi:error] [pid 11:tid 139625189295872] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:15:40.838499 2018] [wsgi:error] [pid 11:tid 139625189295872] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 18:15:40.840581 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356] mod_wsgi (pid=11): Target WSGI script '/code/agave_id/agave_id/wsgi.py' cannot be loaded as Python module.
+[Mon Apr 02 18:15:40.840599 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356] mod_wsgi (pid=11): Exception occurred processing WSGI script '/code/agave_id/agave_id/wsgi.py'.
+[Mon Apr 02 18:15:40.840622 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356] Traceback (most recent call last):
+[Mon Apr 02 18:15:40.840642 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]   File "/code/agave_id/agave_id/wsgi.py", line 15, in <module>
+[Mon Apr 02 18:15:40.840719 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]     application = get_wsgi_application()
+[Mon Apr 02 18:15:40.840735 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]   File "/usr/local/lib/python2.7/dist-packages/django/core/wsgi.py", line 13, in get_wsgi_application
+[Mon Apr 02 18:15:40.840803 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]     django.setup(set_prefix=False)
+[Mon Apr 02 18:15:40.840815 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]   File "/usr/local/lib/python2.7/dist-packages/django/__init__.py", line 22, in setup
+[Mon Apr 02 18:15:40.840853 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]     configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+[Mon Apr 02 18:15:40.840860 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]   File "/usr/local/lib/python2.7/dist-packages/django/utils/log.py", line 75, in configure_logging
+[Mon Apr 02 18:15:40.840917 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]     logging_config_func(logging_settings)
+[Mon Apr 02 18:15:40.840924 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]   File "/usr/lib/python2.7/logging/config.py", line 794, in dictConfig
+[Mon Apr 02 18:15:40.841071 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]     dictConfigClass(config).configure()
+[Mon Apr 02 18:15:40.841084 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]   File "/usr/lib/python2.7/logging/config.py", line 576, in configure
+[Mon Apr 02 18:15:40.841104 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356]     '%r: %s' % (name, e))
+[Mon Apr 02 18:15:40.841117 2018] [wsgi:error] [pid 11:tid 139625189295872] [client 172.17.0.1:42356] ValueError: Unable to configure handler 'default': [Errno 13] Permission denied: '/tmp/django.log'
+[Mon Apr 02 13:16:33.158390 2018] [wsgi:error] [pid 11:tid 139625197688576] DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 13:17:22.973774 2018] [wsgi:error] [pid 11:tid 139625172510464] top of GET /ous
+[Mon Apr 02 13:17:22.973849 2018] [wsgi:error] [pid 11:tid 139625172510464] Getting ous...
+[Mon Apr 02 13:17:22.973866 2018] [wsgi:error] [pid 11:tid 139625172510464] top of get_ous
+[Mon Apr 02 13:17:22.974081 2018] [wsgi:error] [pid 11:tid 139625172510464] closing old connections
+[Mon Apr 02 13:17:22.974127 2018] [wsgi:error] [pid 11:tid 139625172510464] old connections closed.
+[Mon Apr 02 13:17:22.978041 2018] [wsgi:error] [pid 11:tid 139625172510464] got ous: <QuerySet [<LdapOU: tenant1>]>; type(ous) = <class 'django.db.models.query.QuerySet'>
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:33:54.963134 2018] [wsgi:warn] [pid 9:tid 140030243637120] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:33:54.963254 2018] [wsgi:warn] [pid 9:tid 140030243637120] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:33:54.963801 2018] [mpm_event:notice] [pid 9:tid 140030243637120] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:33:54.963820 2018] [core:notice] [pid 9:tid 140030243637120] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:33:59.765317 2018] [wsgi:error] [pid 10:tid 140030145742592] use_custom_ldap: False
+[Mon Apr 02 18:33:59.765382 2018] [wsgi:error] [pid 10:tid 140030145742592] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:33:59.765434 2018] [wsgi:error] [pid 10:tid 140030145742592] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 18:33:59.922891 2018] [wsgi:error] [pid 10:tid 140030145742592] top of get_ous
+[Mon Apr 02 18:35:29.055092 2018] [wsgi:error] [pid 11:tid 140030145742592] use_custom_ldap: False
+[Mon Apr 02 18:35:29.055149 2018] [wsgi:error] [pid 11:tid 140030145742592] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:35:29.055184 2018] [wsgi:error] [pid 11:tid 140030145742592] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 13:36:19.524745 2018] [wsgi:error] [pid 10:tid 140030128957184] top of get_ous
+[Mon Apr 02 13:36:27.379065 2018] [wsgi:error] [pid 10:tid 140030112171776] top of get_ous
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:37:58.963837 2018] [wsgi:warn] [pid 9:tid 139655299639168] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:37:58.963956 2018] [wsgi:warn] [pid 9:tid 139655299639168] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:37:58.964559 2018] [mpm_event:notice] [pid 9:tid 139655299639168] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:37:58.964575 2018] [core:notice] [pid 9:tid 139655299639168] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:38:07.966251 2018] [wsgi:error] [pid 11:tid 139655201744640] use_custom_ldap: False
+[Mon Apr 02 18:38:07.966304 2018] [wsgi:error] [pid 11:tid 139655201744640] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:38:07.966356 2018] [wsgi:error] [pid 11:tid 139655201744640] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 13:38:08.125683 2018] [wsgi:error] [pid 11:tid 139655201744640] top of get_ous
+[Mon Apr 02 13:38:22.892991 2018] [wsgi:error] [pid 11:tid 139655184959232] top of get_ous
+[Mon Apr 02 13:38:57.178432 2018] [wsgi:error] [pid 11:tid 139655168173824] top of get_ous
+[Mon Apr 02 18:39:10.450439 2018] [wsgi:error] [pid 10:tid 139655201744640] use_custom_ldap: False
+[Mon Apr 02 18:39:10.450506 2018] [wsgi:error] [pid 10:tid 139655201744640] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:39:10.450550 2018] [wsgi:error] [pid 10:tid 139655201744640] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 13:41:23.215163 2018] [wsgi:error] [pid 11:tid 139654971987712] top of get_ous
+[Mon Apr 02 13:41:29.640842 2018] [wsgi:error] [pid 11:tid 139654955202304] top of get_ous
+[Mon Apr 02 13:41:30.106193 2018] [wsgi:error] [pid 11:tid 139654938416896] top of get_ous
+[Mon Apr 02 13:41:30.525629 2018] [wsgi:error] [pid 11:tid 139655201744640] top of get_ous
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:44:29.507240 2018] [wsgi:warn] [pid 9:tid 140019730126720] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:44:29.507352 2018] [wsgi:warn] [pid 9:tid 140019730126720] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:44:29.507915 2018] [mpm_event:notice] [pid 9:tid 140019730126720] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:44:29.507929 2018] [core:notice] [pid 9:tid 140019730126720] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:44:37.509570 2018] [wsgi:error] [pid 10:tid 140019557725952] use_custom_ldap: False
+[Mon Apr 02 18:44:37.509624 2018] [wsgi:error] [pid 10:tid 140019557725952] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:44:37.509677 2018] [wsgi:error] [pid 10:tid 140019557725952] Using db_name: ldap://172.17.0.2:389
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:46:18.387881 2018] [wsgi:warn] [pid 9:tid 139981678040960] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:46:18.387988 2018] [wsgi:warn] [pid 9:tid 139981678040960] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:46:18.388513 2018] [mpm_event:notice] [pid 9:tid 139981678040960] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:46:18.388529 2018] [core:notice] [pid 9:tid 139981678040960] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:48:04.201150 2018] [wsgi:warn] [pid 9:tid 139978207541120] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:48:04.201269 2018] [wsgi:warn] [pid 9:tid 139978207541120] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:48:04.202030 2018] [mpm_event:notice] [pid 9:tid 139978207541120] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:48:04.202048 2018] [core:notice] [pid 9:tid 139978207541120] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:48:08.293017 2018] [wsgi:error] [pid 11:tid 139978109646592] use_custom_ldap: False
+[Mon Apr 02 18:48:08.293069 2018] [wsgi:error] [pid 11:tid 139978109646592] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:48:08.293123 2018] [wsgi:error] [pid 11:tid 139978109646592] Using db_name: ldap://172.17.0.2:389
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:52:37.503752 2018] [wsgi:warn] [pid 9:tid 140713756768128] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:52:37.503889 2018] [wsgi:warn] [pid 9:tid 140713756768128] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:52:37.504511 2018] [mpm_event:notice] [pid 9:tid 140713756768128] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:52:37.504531 2018] [core:notice] [pid 9:tid 140713756768128] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:52:40.394137 2018] [wsgi:error] [pid 10:tid 140713642088192] use_custom_ldap: False
+[Mon Apr 02 18:52:40.394188 2018] [wsgi:error] [pid 10:tid 140713642088192] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:52:40.394242 2018] [wsgi:error] [pid 10:tid 140713642088192] Using db_name: ldap://172.17.0.2:389
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:54:20.947923 2018] [wsgi:warn] [pid 9:tid 140118416312192] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:54:20.948084 2018] [wsgi:warn] [pid 9:tid 140118416312192] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:54:20.948960 2018] [mpm_event:notice] [pid 9:tid 140118416312192] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:54:20.948988 2018] [core:notice] [pid 9:tid 140118416312192] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:54:34.719783 2018] [wsgi:error] [pid 11:tid 140118318417664] use_custom_ldap: False
+[Mon Apr 02 18:54:34.719835 2018] [wsgi:error] [pid 11:tid 140118318417664] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:54:34.719889 2018] [wsgi:error] [pid 11:tid 140118318417664] Using db_name: ldap://172.17.0.2:389
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:57:47.068253 2018] [wsgi:warn] [pid 9:tid 139960563070848] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:57:47.068359 2018] [wsgi:warn] [pid 9:tid 139960563070848] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:57:47.068870 2018] [mpm_event:notice] [pid 9:tid 139960563070848] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:57:47.068884 2018] [core:notice] [pid 9:tid 139960563070848] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:58:03.135603 2018] [wsgi:error] [pid 11:tid 139960465176320] use_custom_ldap: False
+[Mon Apr 02 18:58:03.135670 2018] [wsgi:error] [pid 11:tid 139960465176320] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:58:03.135736 2018] [wsgi:error] [pid 11:tid 139960465176320] Using db_name: ldap://172.17.0.2:389
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 19:01:13.824225 2018] [wsgi:warn] [pid 9:tid 140017150150528] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 19:01:13.824349 2018] [wsgi:warn] [pid 9:tid 140017150150528] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 19:01:13.824954 2018] [mpm_event:notice] [pid 9:tid 140017150150528] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 19:01:13.824971 2018] [core:notice] [pid 9:tid 140017150150528] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 19:01:29.598617 2018] [wsgi:error] [pid 11:tid 140017052256000] use_custom_ldap: False
+[Mon Apr 02 19:01:29.598673 2018] [wsgi:error] [pid 11:tid 140017052256000] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 19:01:29.598717 2018] [wsgi:error] [pid 11:tid 140017052256000] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 19:01:29.758131 2018] [wsgi:error] [pid 11:tid 140017052256000] Getting a logger for: service.views
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 19:02:03.847785 2018] [wsgi:warn] [pid 9:tid 140592020780928] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 19:02:03.847905 2018] [wsgi:warn] [pid 9:tid 140592020780928] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 19:02:03.848485 2018] [mpm_event:notice] [pid 9:tid 140592020780928] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 19:02:03.848500 2018] [core:notice] [pid 9:tid 140592020780928] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 19:02:06.066808 2018] [wsgi:error] [pid 11:tid 140591914493696] use_custom_ldap: False
+[Mon Apr 02 19:02:06.066878 2018] [wsgi:error] [pid 11:tid 140591914493696] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 19:02:06.066933 2018] [wsgi:error] [pid 11:tid 140591914493696] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 19:02:06.230746 2018] [wsgi:error] [pid 11:tid 140591914493696] Getting a logger for: service.views
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 19:03:52.646335 2018] [wsgi:warn] [pid 9:tid 139741840627584] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 19:03:52.646444 2018] [wsgi:warn] [pid 9:tid 139741840627584] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 19:03:52.647046 2018] [mpm_event:notice] [pid 9:tid 139741840627584] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 19:03:52.647064 2018] [core:notice] [pid 9:tid 139741840627584] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 19:03:56.125834 2018] [wsgi:error] [pid 11:tid 139741742733056] use_custom_ldap: False
+[Mon Apr 02 19:03:56.125888 2018] [wsgi:error] [pid 11:tid 139741742733056] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 19:03:56.125939 2018] [wsgi:error] [pid 11:tid 139741742733056] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 19:03:56.284244 2018] [wsgi:error] [pid 11:tid 139741742733056] Getting a logger for: service.views
+[Mon Apr 02 14:04:30.446749 2018] [wsgi:error] [pid 11:tid 139741634742016] serializer.is_valid: True

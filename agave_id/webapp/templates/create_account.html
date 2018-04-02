@@ -1,0 +1,39 @@
+	{% extends "base.html" %}
+	<body>
+
+		<div class="container">
+		{% block content %}
+			{% if error %}
+			<div class="alert alert-danger" role="alert"> {{ error }} </div>
+			{% endif %}
+
+			{% if account_created %}
+
+			<div class="alert alert-success" role="alert">
+				Account created!  An email will be sent shortly to the email address you registered when creating your account. Click the link in that email to activate your account.
+			</div>
+
+			{% else %}
+			<form class="form-signin create_account" action="create_account" method='post' id="create_account" role="form">
+				{% csrf_token %}
+				<h2 class="form-signin-heading">Create your account</h2>
+				<input type="text" class="form-control" placeholder="Username" required autofocus name="username" maxlength="50" value="{{ username }}">
+				<input type="text" class="form-control" placeholder="First Name" name="first_name" maxlength="50" value='{{first_name}}'>
+				<input type="text" class="form-control" placeholder="Last Name" name="last_name" maxlength="50"  value='{{last_name}}'>
+				<input type="email" class="form-control" placeholder="Email address" name="email" required autofocus maxlength="75" value='{{email}}'>
+				<input type="password" class="form-control" placeholder="Password" required name="password" maxlength="50">
+				<input type="password" class="form-control" placeholder="Confirm Password" required name="password2" maxlength="50">
+				<!--button type="submit" name="Submit">Sign up</button-->
+                <!--input class="btn btn-lg btn-primary btn-block" type="submit" name="Submit" value="Sign Up"-->
+                <button class="btn btn-lg btn-primary btn-block" type="submit" name="Submit">Sign up</button>
+			</form>
+			{% endif %}
+
+		{% endblock %}
+		</div> <!-- /container -->
+
+
+		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+		<script src="js/ie10-viewport-bug-workaround.js"></script>
+	</body>
+</html>
