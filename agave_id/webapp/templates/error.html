@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+<body>
+
+	<div class="container">
+	{% block content %}
+
+		{% if error %}
+		<div class="alert alert-danger" role="alert">You are not authorized.</div>
+		{% endif %}
+
+	{% endblock %}
+	</div> <!-- /container -->
+
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script src="js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

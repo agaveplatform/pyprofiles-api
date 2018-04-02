@@ -1,0 +1,52 @@
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:07:10.726927 2018] [wsgi:warn] [pid 10:tid 140641876084608] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:07:10.727047 2018] [wsgi:warn] [pid 10:tid 140641876084608] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:07:10.727656 2018] [mpm_event:notice] [pid 10:tid 140641876084608] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:07:10.727828 2018] [core:notice] [pid 10:tid 140641876084608] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:07:17.508227 2018] [wsgi:error] [pid 11:tid 140641778190080] use_custom_ldap: False
+[Mon Apr 02 18:07:17.508283 2018] [wsgi:error] [pid 11:tid 140641778190080] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:07:17.508361 2018] [wsgi:error] [pid 11:tid 140641778190080] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 18:07:17.509858 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190] mod_wsgi (pid=11): Target WSGI script '/code/agave_id/agave_id/wsgi.py' cannot be loaded as Python module.
+[Mon Apr 02 18:07:17.509870 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190] mod_wsgi (pid=11): Exception occurred processing WSGI script '/code/agave_id/agave_id/wsgi.py'.
+[Mon Apr 02 18:07:17.509897 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190] Traceback (most recent call last):
+[Mon Apr 02 18:07:17.509911 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]   File "/code/agave_id/agave_id/wsgi.py", line 15, in <module>
+[Mon Apr 02 18:07:17.509966 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]     application = get_wsgi_application()
+[Mon Apr 02 18:07:17.509977 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]   File "/usr/local/lib/python2.7/dist-packages/django/core/wsgi.py", line 13, in get_wsgi_application
+[Mon Apr 02 18:07:17.510021 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]     django.setup(set_prefix=False)
+[Mon Apr 02 18:07:17.510032 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]   File "/usr/local/lib/python2.7/dist-packages/django/__init__.py", line 22, in setup
+[Mon Apr 02 18:07:17.510073 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]     configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+[Mon Apr 02 18:07:17.510083 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]   File "/usr/local/lib/python2.7/dist-packages/django/utils/log.py", line 75, in configure_logging
+[Mon Apr 02 18:07:17.510146 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]     logging_config_func(logging_settings)
+[Mon Apr 02 18:07:17.510155 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]   File "/usr/lib/python2.7/logging/config.py", line 794, in dictConfig
+[Mon Apr 02 18:07:17.510326 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]     dictConfigClass(config).configure()
+[Mon Apr 02 18:07:17.510335 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]   File "/usr/lib/python2.7/logging/config.py", line 576, in configure
+[Mon Apr 02 18:07:17.510363 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190]     '%r: %s' % (name, e))
+[Mon Apr 02 18:07:17.510376 2018] [wsgi:error] [pid 11:tid 140641778190080] [client 172.17.0.1:42190] ValueError: Unable to configure handler 'default': [Errno 13] Permission denied: '/var/log/apache2/django.log'
+[Mon Apr 02 18:11:35.880204 2018] [wsgi:error] [pid 12:tid 140641778190080] use_custom_ldap: False
+[Mon Apr 02 18:11:35.880260 2018] [wsgi:error] [pid 12:tid 140641778190080] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:11:35.880315 2018] [wsgi:error] [pid 12:tid 140641778190080] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 18:11:35.881755 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236] mod_wsgi (pid=12): Target WSGI script '/code/agave_id/agave_id/wsgi.py' cannot be loaded as Python module.
+[Mon Apr 02 18:11:35.881768 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236] mod_wsgi (pid=12): Exception occurred processing WSGI script '/code/agave_id/agave_id/wsgi.py'.
+[Mon Apr 02 18:11:35.881793 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236] Traceback (most recent call last):
+[Mon Apr 02 18:11:35.881817 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]   File "/code/agave_id/agave_id/wsgi.py", line 15, in <module>
+[Mon Apr 02 18:11:35.881876 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]     application = get_wsgi_application()
+[Mon Apr 02 18:11:35.881896 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]   File "/usr/local/lib/python2.7/dist-packages/django/core/wsgi.py", line 13, in get_wsgi_application
+[Mon Apr 02 18:11:35.881957 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]     django.setup(set_prefix=False)
+[Mon Apr 02 18:11:35.881988 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]   File "/usr/local/lib/python2.7/dist-packages/django/__init__.py", line 22, in setup
+[Mon Apr 02 18:11:35.882027 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]     configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+[Mon Apr 02 18:11:35.882045 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]   File "/usr/local/lib/python2.7/dist-packages/django/utils/log.py", line 75, in configure_logging
+[Mon Apr 02 18:11:35.882144 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]     logging_config_func(logging_settings)
+[Mon Apr 02 18:11:35.882153 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]   File "/usr/lib/python2.7/logging/config.py", line 794, in dictConfig
+[Mon Apr 02 18:11:35.882380 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]     dictConfigClass(config).configure()
+[Mon Apr 02 18:11:35.882389 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]   File "/usr/lib/python2.7/logging/config.py", line 576, in configure
+[Mon Apr 02 18:11:35.882416 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236]     '%r: %s' % (name, e))
+[Mon Apr 02 18:11:35.882439 2018] [wsgi:error] [pid 12:tid 140641778190080] [client 172.17.0.1:42236] ValueError: Unable to configure handler 'default': [Errno 13] Permission denied: '/var/log/apache2/django.log'
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Apr 02 18:12:20.506957 2018] [wsgi:warn] [pid 9:tid 140538597922688] mod_wsgi: Compiled for Python/2.7.11.
+[Mon Apr 02 18:12:20.507092 2018] [wsgi:warn] [pid 9:tid 140538597922688] mod_wsgi: Runtime using Python/2.7.12.
+[Mon Apr 02 18:12:20.507834 2018] [mpm_event:notice] [pid 9:tid 140538597922688] AH00489: Apache/2.4.18 (Ubuntu) mod_wsgi/4.3.0 Python/2.7.12 configured -- resuming normal operations
+[Mon Apr 02 18:12:20.507853 2018] [core:notice] [pid 9:tid 140538597922688] AH00094: Command line: '/usr/sbin/apache2 -D FOREGROUND'
+[Mon Apr 02 18:12:47.409193 2018] [wsgi:error] [pid 10:tid 140538500028160] use_custom_ldap: False
+[Mon Apr 02 18:12:47.409245 2018] [wsgi:error] [pid 10:tid 140538500028160] using LDAP_BASE_SEARCH_DN: ou=tenant1,dc=agaveapi
+[Mon Apr 02 18:12:47.409298 2018] [wsgi:error] [pid 10:tid 140538500028160] Using db_name: ldap://172.17.0.2:389
+[Mon Apr 02 18:12:47.569963 2018] [wsgi:error] [pid 10:tid 140538500028160] DN: ou=tenant1,dc=agaveapi

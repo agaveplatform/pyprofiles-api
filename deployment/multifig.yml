@@ -1,0 +1,23 @@
+# The following fig.yml file starts up the agave_id service in multi-tenant mode. It defaults to
+# using an image, but you can also build from source if you prefer. You will need to endure that
+# MULTI_TENANT=True is set in your local_settings.py file first.
+
+agaveid:
+  image: jstubbs/agave_id_multi
+  # Uncomment the following line (and comment the build line just above) to build from source
+#  build: ../
+  ports:
+    - "8000:80"
+  links:
+    - ldap
+  environment:
+    HOST_IP:
+
+ldap:
+  image: jstubbs/slapd
+  environment:
+    - LDAP_DOMAIN=agaveapi
+    - LDAP_ORGANISATION="Agave"
+    - LDAP_ROOTPASS=p@ssword
+  ports:
+    - "10389:389"

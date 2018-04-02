@@ -1,0 +1,13 @@
+beanstalkc
+django==1.11
+django-cors-headers
+django-ldapdb
+#djangorestframework==2.3.13
+djangorestframework
+
+sendgrid-django
+pycrypto
+PyJWT==0.1.9
+python-ldap
+requests
+-e git+https://jstubbs@bitbucket.org/jstubbs/agave_common.git#egg=agave_common
