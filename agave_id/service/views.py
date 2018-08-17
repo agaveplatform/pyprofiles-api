@@ -118,6 +118,7 @@ class Users(APIView):
         last_name -- last name
         phone  -- phone number
         mobile_phone  -- mobile phone number
+        status -- user status
         """
         logger.debug("top of POST /users")
         if settings.READ_ONLY:
@@ -188,6 +189,7 @@ class UserDetails(APIView):
         last_name -- last name
         phone  -- phone number
         mobile_phone  -- mobile phone number
+        status -- user status
 
         """
         logger.debug("top of PUT /users/{}".format(username))

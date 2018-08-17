@@ -33,9 +33,12 @@ class LdapUserSerializer(serializers.ModelSerializer):
                 attrs['full_name'] = attrs.get('username')
         if not attrs.get('last_name'):
             attrs['last_name'] = attrs.get('full_name')
-            
-        # users added through REST API are automatically active:
-        attrs['status'] = settings.ACTIVE_STATUS
+
+        # users added through REST API are automatically active unless status is specified:
+        if attrs.get('status'):
+            attrs['status'] = attrs.get('status')
+        else:
+            attrs['status'] = settings.ACTIVE_STATUS
         attrs['nonce'] = str(random.randrange(0, 999999999))
         # attrs['create_time'] = str(datetime.datetime.now())
         # attrs['create_time'] = time.strftime('%Y %m %d %H %M %S', time.localtime()).replace(" ", "") + "Z"
