@@ -13,7 +13,7 @@ class LdapUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LdapUser
-        fields = ('first_name', 'last_name', 'full_name', 'email', 'phone', 'mobile_phone', 'status', 'create_time',
+        fields = ('first_name', 'last_name', 'full_name', 'email', 'phone', 'mobile_phone', 'nonce', 'status', 'create_time',
                   'uid', 'username', 'password')
         depth = 1
 
