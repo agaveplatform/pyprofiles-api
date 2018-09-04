@@ -3,7 +3,8 @@ __author__ = 'jstubbs'
 import logging
 import json
 import random
-import sys;
+import sys
+import time
 
 import ldap
 from django.conf import settings
@@ -75,8 +76,7 @@ def create_ldap_user(username=None,
         u.phone = phone or attrs.get('phone')
     u.status = settings.INACTIVE_STATUS
     u.nonce = str(random.randrange(0, 999999999))
-    # u.create_time = str(datetime.datetime.now())
-    # u.create_time = time.strftime('%Y %m %d %H %M %S', time.localtime()).replace(" ", "")
+    u.create_time = time.strftime('%Y %m %d %H %M %S', time.localtime()).replace(" ", "")
     return u
 
 def save_ldap_user(user=None, serializer=None):

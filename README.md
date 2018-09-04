@@ -8,26 +8,52 @@ Agave platform's hosted identity offering. It may be of general interest to deve
 also includes features specific to the Agave platform, such as hooks into the Agave Notifications
 service.
 
-## Running from Fig ##
-The project ships with a fig.yml file for easy deployment locally. The only dependencies are
-docker and Fig. Install each and then execute:
+## Running from Docker-compose ##
+The project ships with a docker-compose.yml file for easy deployment locally. The only dependencies are
+docker and docker-compose. Install each and then, from within the deployment directory, execute:
 
 ```
 #!bash
 
-deployment/startup.sh
+$ docker-compose up -d
 ```
 
-This script starts up the service in single-tenant mode. It runs two docker containers - one with the
-agave_id application and one with an openldap db. It will also populate the ldap db with an
-organizational unit (tenant1) and a test user (username jdoe).
-
-If you would prefer to run the service in multi-tenant mode, execute
+At this point the API as well as an LDAP database should be running within two docker containers. Create
+an OU (orgnaizational unit) by making an API call:
 
 ```
-#!bash
-
-deployment/multitenant_startup.sh
+$ curl -d "ou=tenant1" localhost:8000/ous
 ```
 
-instead.
+The response should be something like:
+
+```
+{
+   "status":"success",
+   "message":"OU created successfully.",
+   "version":"2.0.0-SNAPSHOT-rc3fad",
+   "result":{}
+}
+```
+
+We can now create and list users in the new OU using the API. For example:
+
+```
+$ curl -d "username=test&password=abcd123&email=test@test.com" localhost:8000/users
+
+{
+   "status":"success",
+   "message":"User created successfully.",
+   "version":"2.0.0-SNAPSHOT-rc3fad",
+   "result":{
+      "first_name":"",
+      "last_name":"test",
+      "full_name":"test",
+      "email":"test@test.com",
+      "phone":"",
+      "mobile_phone":"",
+      "status":"Active",
+      "uid":null,
+      "username":"test"
+   }
+}
