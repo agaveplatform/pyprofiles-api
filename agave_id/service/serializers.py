@@ -17,8 +17,8 @@ class LdapUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LdapUser
-        fields = ('first_name', 'last_name', 'full_name', 'email', 'phone', 'mobile_phone', 'status', 'create_time',
-                  'uid', 'username', 'password', 'nonce')
+        fields = ('first_name', 'last_name', 'full_name', 'email', 'phone', 'mobile_phone', 'nonce', 'status', 'create_time',
+                  'uid', 'username', 'password')
         depth = 1
 
     def validate(self, attrs):
@@ -39,8 +39,11 @@ class LdapUserSerializer(serializers.ModelSerializer):
         if not attrs.get('last_name'):
             attrs['last_name'] = attrs.get('full_name')
 
-        # users added through REST API are automatically active:
-        attrs['status'] = settings.ACTIVE_STATUS
+        # users added through REST API are automatically active unless status is specified:
+        if attrs.get('status'):
+            attrs['status'] = attrs.get('status')
+        else:
+            attrs['status'] = settings.ACTIVE_STATUS
         attrs['nonce'] = str(random.randrange(0, 999999999))
         # attrs['create_time'] = time.strftime('%Y %m %d %H %M %S', time.localtime()).replace(" ", "") + "Z"
         # attrs['create_time'] = time.strftime('%Y %m %d', time.localtime()).replace(" ", "")
@@ -79,5 +82,4 @@ class LdapUserSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         ret = super(LdapUserSerializer, self).to_representation(obj)
         ret.pop('password', None)
-#        ret.pop('create_time', None)
         return ret
