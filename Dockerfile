@@ -17,6 +17,8 @@ RUN apt-get install -y lynx
 
 RUN apt-get install -y ldap-utils
 
+RUN apt-get install -y vim
+
 ADD deployment/ldap.conf /etc/ldap/ldap.conf
 
 RUN mkdir /code

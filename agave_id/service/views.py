@@ -21,7 +21,6 @@ from service import util
 from serializers import LdapUserSerializer
 
 # Get an instance of a logger
-print("Getting a logger for: {}".format(__name__))
 logger = logging.getLogger(__name__)
 
 
@@ -120,36 +119,70 @@ class Users(APIView):
         mobile_phone  -- mobile phone number
         """
         logger.debug("top of POST /users")
+        result = None
         if settings.READ_ONLY:
             return Response(error_dict(msg="Read-only service.", query_dict=request.GET), status=status.HTTP_400_BAD_REQUEST)
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
+
         serializer = LdapUserSerializer(data=request.data)
-        # password only required on POST
+        valid = serializer.is_valid()
+        logger.debug("got {} from serializer.is_valid()".format(valid))
+
+        # password only required on POST so we put the check here and not in the validator.
         if not request.data.get("password"):
-            serializer.errors['password'] = ["This field is required."]
-        if request.data.get('username') == "me":
-            serializer.errors['username'] = ["me is a reserved and cannot be used for a username."]
-        if serializer.is_valid():
-            print("serializer.is_valid: {}".format(serializer.is_valid()))
-            try:
-                util.save_ldap_user(serializer=serializer)
-                logger.info("user {} saved in db".format(request.data.get('username')))
-            except Error as e:
-                logger.error("got exception trying to save user: {}".format(e))
-                return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
-            finally:
-                db.close_old_connections()
-            if settings.CREATE_NOTIFICATIONS:
-                logger.debug("creating a notification for new user: {}".format(request.data.get('username')))
-                create_notification(request.data.get('username'), "CREATED", "jstubbs")
-            return Response(success_dict(msg="User created successfully.",
-                                         result=serializer.data, query_dict=request.GET),
-                            status=status.HTTP_201_CREATED)
-        return Response(error_dict(result=serializer.errors,
-                                   msg="Error creating user.", query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
+            # UPDATE 7/2018: due to a change in the DjangoRestFramework API, it is no longer possible to
+            # update the serializer directly here. To keep backwards compatibility with previous versions of the
+            # profiles API, we add the password error directly to the result object;
+            # # # # # # # #serializer.errors['password'] = ["This field is required."]
+            result = {'password': ["This field is required."]}
+            valid = False
+            logger.debug("ERROR - no password.")
+        else:
+            logger.debug("password was OK")
+
+        if not valid:
+            logger.debug("inside NOT VALID. serializer.errors: {}".format(serializer.errors))
+            if result:
+                result.update(serializer.errors)
+                logger.debug("result was not none. result: {}; "
+                             "serialize.errors: {}"
+                             "type(serializer.errors): {}; "
+                             "dir: {}".format(result, serializer.errors, type(serializer.errors), dir(serializer.errors)))
+                return Response(error_dict(result=result,
+                                           msg="Error creating user.",
+                                           query_dict=request.GET),
+                                status.HTTP_400_BAD_REQUEST)
+            else:
+                logger.debug("no result.")
+                return Response(error_dict(result=serializer.errors,
+                                           msg="Error creating user.",
+                                           query_dict=request.GET),
+                                status.HTTP_400_BAD_REQUEST)
+        logger.debug("serializer.is_valid: {}".format(serializer.is_valid()))
+        try:
+            util.save_ldap_user(serializer=serializer)
+            logger.info("user {} saved in db".format(request.data.get('username')))
+        except Error as e:
+            logger.error("got exception trying to save user: {}".format(e))
+            db.close_old_connections()
+            return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
+        try:
+            # retrieve the new user just saved to get db-generated fields:
+            user = LdapUser.objects.get(username=request.data.get('username'))
+            serializer = LdapUserSerializer(user)
+        except Error as e:
+            logger.error("got exception trying to retrieve saved user: {}".format(e))
+        finally:
+            db.close_old_connections()
+        if settings.CREATE_NOTIFICATIONS:
+            logger.debug("creating a notification for new user: {}".format(request.data.get('username')))
+            create_notification(request.data.get('username'), "CREATED", "jstubbs")
+        return Response(success_dict(msg="User created successfully.",
+                                     result=serializer.data, query_dict=request.GET),
+                        status=status.HTTP_201_CREATED)
 
 class UserDetails(APIView):
     def perform_authentication(self, request):
