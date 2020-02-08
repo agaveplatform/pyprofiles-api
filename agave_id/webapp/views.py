@@ -9,9 +9,9 @@ from django.views.decorators.http import require_GET, require_http_methods
 
 from service.models import LdapUser
 from service.util import audit_ldap_user, create_ldap_user, get_email_message, populate_context, save_ldap_user
-from common.error import Error
-from common.notifications import create_notification
-from common.responses import error_response
+from pycommon.error import Error
+from pycommon.notifications import create_notification
+from pycommon.responses import error_response
 
 KEY = '93z3hgk19pwa74m2'
 
