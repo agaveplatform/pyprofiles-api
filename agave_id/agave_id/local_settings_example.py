@@ -2,9 +2,10 @@
 This is an example of the local_settings.py file and provides a minimal configuration to run the
 service locally. Rename as local_settings.py and update as necessary for a production deployment.
 """
-
+from __future__ import unicode_literals
 import ldap
 import os
+from django.utils import encoding
 
 # --------
 # TENANCY
@@ -25,18 +26,14 @@ READ_ONLY = os.environ.get('agave_id_read_only', False)
 # -------------------
 # Whether or not to check the JWT; When this is False, certain features will not be available such as the
 # "me" lookup feature since these features rely on profile information in the JWT.
-CHECK_JWT = os.environ.get('check_jwt', False)
+CHECK_JWT = os.environ.get('CHECK_JWT', False)
 
 # Actual header name that will show up in request.META; value depends on APIM configuration, in particular
 # the tenant id specified in api-manager.xml
-JWT_HEADER = os.environ.get('jwt_header', 'HTTP_JWT_ASSERTION')
-
-# Relative location of the public key of the APIM instance; used for verifying the signature of the JWT.
-#PUB_KEY = 'usersApp/agave-vdjserver-org_pub.txt'
-PUB_KEY = '/home/apim/public_keys/apim_default.pub'
+JWT_HEADER = os.environ.get('JWT_HEADER', 'HTTP_JWT_ASSERTION')
 
 # APIM Role required to make updates to the LDAP database
-USER_ADMIN_ROLE = 'Internal/user-account-manager'
+USER_ADMIN_ROLE = os.environ.get('USER_ADMIN_ROLE', 'Internal/user-account-manager')
 
 # Whether or not the USER_ADMIN_ROLE before allowing updates to the LDAP db (/users service)
 CHECK_USER_ADMIN_ROLE = True
@@ -48,13 +45,13 @@ CHECK_USER_ADMIN_ROLE = True
 # These settings tell the users service how to bind to the LDAP db and where to store account records
 
 # Use these settings for the LDAP on localhost running out of docker:
-AUTH_LDAP_BIND_DN = u'cn=admin,dc=agaveapi'
-AUTH_LDAP_BIND_PASSWORD = u'p@ssword'
-LDAP_BASE_SEARCH_DN = u'dc=agaveapi'
+AUTH_LDAP_BIND_DN = os.environ.get('LDAP_BIND_DN', u'cn=admin,dc=agaveapi')
+AUTH_LDAP_BIND_PASSWORD = os.environ.get('LDAP_BIND_PASSWORD', u'p@ssword')
+LDAP_BASE_SEARCH_DN = os.environ.get('LDAP_BASE_SEARCH_DN', u'dc=agaveapi')
 
 # Set USE_CUSTOM_LDAP = True to use a database with a different schema than the traditional Agave ldap. Some
 # fields are still required, for example the uid field as the primary key.
-USE_CUSTOM_LDAP = os.environ.get('use_custom_ldap', False)
+USE_CUSTOM_LDAP = os.environ.get('USE_CUSTOM_LDAP', False)
 
 # Status codes for LDAP:
 INACTIVE_STATUS = 'Inactive'
@@ -79,11 +76,11 @@ DEBUG = True
 # BEANSTALK INSTANCE
 # ------------------
 CREATE_NOTIFICATIONS = True
-BEANSTALK_SERVER = "iplant-qa.tacc.utexas.edu"
-BEANSTALK_PORT = 11300
-BEANSTALK_TUBE = 'test.jfs'
+BEANSTALK_SERVER = os.environ.get('IPLANT_MESSAGING_HOST', "beanstalkd")
+BEANSTALK_PORT = os.environ.get('IPLANT_MESSAGING_PORT', 11300)
+BEANSTALK_TUBE = os.environ.get('IPLANT_NOTIFICATION_SERVICE_QUEUE', 'dev.notifications.queue')
 BEANSTALK_SRV_CODE = '0001-001'
-TENANT_UUID = os.environ.get('tenant_uuid', '0001411570898814')
+TENANT_UUID = os.environ.get('TENANT_UUID', '0001411570898814-b0b0b0bb0b-0001-016')
 
 
 # ----------------------
@@ -92,17 +89,17 @@ TENANT_UUID = os.environ.get('tenant_uuid', '0001411570898814')
 
 # for running in docker, need to get the ldap db connectivity data from the environment:
 HERE = os.path.dirname(os.path.realpath(__file__))
-
-AUTH_LDAP_BIND_DN = os.environ.get('auth_ldap_bind_dn', AUTH_LDAP_BIND_DN)
-AUTH_LDAP_BIND_PASSWORD = os.environ.get('auth_ldap_bind_password', AUTH_LDAP_BIND_PASSWORD)
-LDAP_BASE_SEARCH_DN = os.environ.get('ldap_base_search_dn', LDAP_BASE_SEARCH_DN)
+#
+# AUTH_LDAP_BIND_DN = os.environ.get('auth_ldap_bind_dn', AUTH_LDAP_BIND_DN)
+# AUTH_LDAP_BIND_PASSWORD = os.environ.get('auth_ldap_bind_password', AUTH_LDAP_BIND_PASSWORD)
+# LDAP_BASE_SEARCH_DN = os.environ.get('ldap_base_search_dn', LDAP_BASE_SEARCH_DN)
 
 # unless the USE_ALTERNATE_LDAP setting is made, update the search dn for the standard Agave ldap structure:
-print "use_custom_ldap:", str(USE_CUSTOM_LDAP)
+print ("use_custom_ldap:", str(USE_CUSTOM_LDAP))
 if not USE_CUSTOM_LDAP:
     LDAP_BASE_SEARCH_DN = 'ou=tenant' + APP_TENANT_ID + ',' + LDAP_BASE_SEARCH_DN
 
-print "using LDAP_BASE_SEARCH_DN:", LDAP_BASE_SEARCH_DN
+print ("using LDAP_BASE_SEARCH_DN:", LDAP_BASE_SEARCH_DN)
 
 # if tenant_id has been defined in the environment used that, otherwise, default to 'dev':
 TENANT_ID = os.environ.get('tenant_id', 'dev')
@@ -126,10 +123,10 @@ if os.path.exists(os.path.join(HERE, 'running_in_docker')):
 else:
     db_name = 'ldap://localhost:10389'
 
-db_name = unicode(db_name)
-LDAP_BASE_SEARCH_DN = unicode(LDAP_BASE_SEARCH_DN)
-AUTH_LDAP_BIND_DN = unicode(AUTH_LDAP_BIND_DN)
-AUTH_LDAP_BIND_PASSWORD = unicode(AUTH_LDAP_BIND_PASSWORD)
+db_name = encoding.smart_unicode(db_name)
+LDAP_BASE_SEARCH_DN = encoding.smart_unicode(LDAP_BASE_SEARCH_DN)
+AUTH_LDAP_BIND_DN = encoding.smart_unicode(AUTH_LDAP_BIND_DN)
+AUTH_LDAP_BIND_PASSWORD = encoding.smart_unicode(AUTH_LDAP_BIND_PASSWORD)
 
 print("Using db_name: {}".format(db_name))
 
@@ -159,7 +156,7 @@ DATABASES = {
 # ----------------------
 # These settings are only used when deploying the account sign up web application:
 NEW_ACCOUNT_EMAIL_SUBJECT='New Agave Account Requested'
-NEW_ACCOUNT_FROM = 'do-not-reply@agaveapi.io'
+NEW_ACCOUNT_FROM = 'no-replay@agaveplatform.org'
 STATIC_ROOT = os.path.join(HERE,'static')
 
 # SMTP - used for the email loop account verification:

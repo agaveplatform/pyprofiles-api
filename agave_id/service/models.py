@@ -28,7 +28,7 @@ class LdapUser(ldapdb.models.Model):
     phone = CharField(db_column=u'telephoneNumber', blank=True)
     mobile_phone = CharField(db_column=u'mobile', blank=True)
     nonce = CharField(db_column=u'employeeNumber', blank=True)
-    status = CharField(db_column=u'employeeType', blank=True)
+    status = CharField(db_column=u'ACTIVE', blank=True)
     create_time = CharField(db_column=u'createTimestamp', blank=True)
 
     # posixAccount
