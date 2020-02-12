@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 #
 # Tests for the agave_id web service. To run these tests:
 # 1, start up the containers using the startup.sh script (this requires docker and docker-compose)
@@ -68,7 +69,7 @@ class LdapUserTests(APITestCase):
             # for user in users:
             #     print user.username
         try:
-            user = create_ldap_user(username="jdoe12345", password="abcde", email="jdoe12345@test.com")
+            user = create_ldap_user(username=u"jdoe12345", password=u"abcde", email=u"jdoe12345@test.com")
             save_ldap_user(user=user)
         except Exception as e:
             raise Error("Unable to set up test db; message: " + str(e.message))

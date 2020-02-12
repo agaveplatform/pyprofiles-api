@@ -1,4 +1,5 @@
- #-*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#-*- coding: utf-8 -*-
 """
 Models for the Agave hosted identity service. LdapUser model borrows heavily
 from the django-ldapdb example model.

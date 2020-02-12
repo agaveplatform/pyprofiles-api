@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 __author__ = 'jstubbs'
 
 import logging
@@ -10,7 +12,7 @@ import ldap
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from common.error import Error
+from pycommon.error import Error
 
 from service.models import LdapUser
 
@@ -54,6 +56,7 @@ def create_ldap_user(username=None,
         except Exception as e:
             raise Error("Invalid payload format")
     u = LdapUser()
+
     u.username = username or attrs.get('username')
     logger.debug("create_ldap_user using username: " + str(u.username))
     u.password = password or attrs.get('password')
@@ -76,7 +79,7 @@ def create_ldap_user(username=None,
         u.phone = phone or attrs.get('phone')
     u.status = settings.INACTIVE_STATUS
     u.nonce = str(random.randrange(0, 999999999))
-    u.create_time = time.strftime('%Y %m %d %H %M %S', time.localtime()).replace(" ", "")
+    # u.create_time = time.strftime('%Y %m %d %H %M.%S', time.localtime()).replace(" ", "")+'Z'
     return u
 
 def save_ldap_user(user=None, serializer=None):
