@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+
+from django.http import HttpResponse
+
 __author__ = 'jstubbs'
 
 import logging
@@ -8,10 +12,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from common.auth import authenticated
-from common.error import Error
-from common.responses import success_dict, error_dict
-from common.notifications import create_notification
+from pycommon.auth import authenticated
+from pycommon.error import Error
+from pycommon.responses import success_dict, error_dict, format_response
+from pycommon.notifications import create_notification
 from service.models import LdapUser
 
 # from service.models import LdapUser
@@ -47,7 +51,9 @@ class OUs(APIView):
         finally:
             db.close_old_connections()
             logger.debug("old connections closed.")
-        return Response(success_dict(msg="Organizational Units retrieved successfully.", result=ous.values()))
+        return HttpResponse(format_response(ous.values(), msg="Organizational Units retrieved successfully.",
+                                            query_dict=request.GET),
+                            content_type="application/json")
 
 
     @authenticated
@@ -103,7 +109,8 @@ class Users(APIView):
             users = users[offset: offset+limit]
         serializer = LdapUserSerializer(users, many=True)
         db.close_old_connections()
-        return Response(success_dict(msg="Users retrieved successfully.", result=serializer.data, query_dict=request.GET))
+        return HttpResponse(format_response(serializer.data, msg="Users retrieved successfully.", query_dict=request.GET),
+                            content_type='application/json')
 
     @authenticated
     def post(self, request, tenant=None, format=None):
@@ -152,13 +159,13 @@ class Users(APIView):
                              "serialize.errors: {}"
                              "type(serializer.errors): {}; "
                              "dir: {}".format(result, serializer.errors, type(serializer.errors), dir(serializer.errors)))
-                return Response(error_dict(result=result,
+                return Response(error_dict(content=result,
                                            msg="Error creating user.",
                                            query_dict=request.GET),
                                 status.HTTP_400_BAD_REQUEST)
             else:
                 logger.debug("no result.")
-                return Response(error_dict(result=serializer.errors,
+                return Response(error_dict(content=serializer.errors,
                                            msg="Error creating user.",
                                            query_dict=request.GET),
                                 status.HTTP_400_BAD_REQUEST)
@@ -181,9 +188,9 @@ class Users(APIView):
         if settings.CREATE_NOTIFICATIONS:
             logger.debug("creating a notification for new user: {}".format(request.data.get('username')))
             create_notification(request.data.get('username'), "CREATED", "jstubbs")
-        return Response(success_dict(msg="User created successfully.",
-                                     result=serializer.data, query_dict=request.GET),
-                        status=status.HTTP_201_CREATED)
+        return HttpResponse(format_response(serializer.data, msg="User created successfully.", query_dict=request.GET),
+                        status=status.HTTP_201_CREATED,
+                        content_type="application/json")
 
 class UserDetails(APIView):
     def perform_authentication(self, request):
@@ -209,7 +216,8 @@ class UserDetails(APIView):
             db.close_old_connections()
         serializer = LdapUserSerializer(user)
 
-        return Response(success_dict(result=serializer.data, msg="User details retrieved successfully.", query_dict=request.GET))
+        return HttpResponse(format_response(serializer.data, msg="User details retrieved successfully.", query_dict=request.GET),
+                            content_type="application/json")
 
     @authenticated
     def put(self, request, username, tenant=None, format=None):
@@ -255,11 +263,12 @@ class UserDetails(APIView):
                 return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
             finally:
                 db.close_old_connections()
-            return Response(success_dict(result=serializer.data,
+            return HttpResponse(format_response(serializer.data,
                                          msg="User updated successfully.", query_dict=request.GET),
-                            status=status.HTTP_201_CREATED)
+                            status=status.HTTP_201_CREATED,
+                            content_type="application/json")
         return Response(error_dict(msg="Error updating user.",
-                                   result=serializer.errors, query_dict=request.GET),
+                                   content=serializer.errors, query_dict=request.GET),
                         status=status.HTTP_400_BAD_REQUEST)
 
     @authenticated
@@ -286,4 +295,5 @@ class UserDetails(APIView):
         db.close_old_connections()
         if settings.CREATE_NOTIFICATIONS:
             create_notification(username, "DELETED", "jstubbs")
-        return Response(success_dict(msg="User deleted successfully.", query_dict=request.GET))
+        return HttpResponse(format_response(None, msg="User deleted successfully.", query_dict=request.GET),
+                            content_type="application/json")

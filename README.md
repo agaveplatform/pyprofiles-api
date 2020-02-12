@@ -22,7 +22,7 @@ At this point the API as well as an LDAP database should be running within two d
 an OU (orgnaizational unit) by making an API call:
 
 ```
-$ curl -d "ou=tenant1" localhost:8000/ous
+$ curl -d "ou=tenant1" 'localhost:8000/ous?pretty=true'
 ```
 
 The response should be something like:
@@ -39,7 +39,7 @@ The response should be something like:
 We can now create and list users in the new OU using the API. For example:
 
 ```
-$ curl -d "username=test&password=abcd123&email=test@test.com" localhost:8000/users
+$ curl -d "username=test&password=abcd123&email=test@test.com" 'localhost:8000/users?pretty=true'
 
 {
    "status":"success",

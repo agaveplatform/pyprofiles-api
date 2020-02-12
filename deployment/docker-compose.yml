@@ -1,27 +1,51 @@
 # The following fig.yml file starts up the agave_id service in single-tenant mode. It defaults to
 # using an image, but you can also build from source if you prefer. You will need to endure that
 # MULTI_TENANT=False is set in your local_settings.py file first.
+version: '3'
 
-agaveid:
-  image: tacc/agave_id
-  # Uncomment the following line (and comment the build line just above) to build from source
-#  build: ../
-  ports:
-    - "8000:80"
-  links:
-    - ldap
-  volumes:
-    - ./apache-error.log:/var/log/apache2/error.log
-    - ./apache-access.log:/var/log/apache2/access.log
-    - ./django.log:/tmp/django.log
-  environment:
-    HOST_IP:
+services:
+  agaveid:
+    image: agave_id_dedicated:develop
+    # Uncomment the following line (and comment the build line just above) to build from source
+    build:
+      context: ../
+    ports:
+      - "8000:80"
+    links:
+      - ldap
+#    volumes:
+#      - ./apache-error.log:/var/log/apache2/error.log
+#      - ./apache-access.log:/var/log/apache2/access.log
+#      - ./django.log:/tmp/django.log
+    environment:
+      HOST_IP:
+      PYTHONUNBUFFERED: 1
+      LDAP_PORT: ldap://ldap:389
+      IPLANT_NOTIFICATION_SERVICE_QUEUE: dev.notifications.queue
+      DJANGO_SETTINGS_MODULE: agave_id.settings
+      IPLANT_MESSAGING_HOST: beanstalkd
+      AGAVE_AUTH_TYPE: noauth
 
-ldap:
-  image: jstubbs/slapd
-  environment:
-    - LDAP_DOMAIN=agaveapi
-    - LDAP_ORGANISATION="Agave"
-    - LDAP_ROOTPASS=p@ssword
-  ports:
-    - "10389:389"
+  ldap:
+    image: jstubbs/slapd
+    environment:
+      - LDAP_DOMAIN=agaveapi
+      - LDAP_ORGANISATION="Agave"
+      - LDAP_ROOTPASS=p@ssword
+    ports:
+      - "10389:389"
+
+  maildev:
+    image: agaveplatform/maildev:latest
+    ports:
+      - "8001:80"
+      - "10025:25"
+    environment:
+      # SMTP username to connect to the server
+      INCOMING_USERNAME: agavedev
+      # SMTP password to connect to the server
+      INCOMING_PASSWORD: password
+      # web ui username
+      WEB_USER: maildev
+      # web ui password
+      WEB_PASS: password
