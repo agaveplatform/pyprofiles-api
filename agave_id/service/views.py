@@ -186,8 +186,8 @@ class Users(APIView):
         finally:
             db.close_old_connections()
         if settings.CREATE_NOTIFICATIONS:
-            logger.debug("creating a notification for new user: {}".format(request.data.get('username')))
-            create_notification(request.data.get('username'), "CREATED", "jstubbs")
+            logger.debug("creating a notification for new user: {}".format(request.username))
+            create_notification(request.data.get('username'), "CREATED", request.username or 'guest')
         return HttpResponse(format_response(serializer.data, msg="User created successfully.", query_dict=request.GET),
                         status=status.HTTP_201_CREATED,
                         content_type="application/json")
@@ -241,7 +241,7 @@ class UserDetails(APIView):
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             if not username == request.username:
                 if settings.CREATE_NOTIFICATIONS:
-                    create_notification(username, "UPDATED", "jstubbs")
+                    create_notification(username, "UPDATED", request.username or 'guest')
                 return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = LdapUser.objects.get(username=username)
@@ -294,6 +294,6 @@ class UserDetails(APIView):
         user.delete()
         db.close_old_connections()
         if settings.CREATE_NOTIFICATIONS:
-            create_notification(username, "DELETED", "jstubbs")
+            create_notification(username, "DELETED", request.username or 'guest')
         return HttpResponse(format_response(None, msg="User deleted successfully.", query_dict=request.GET),
                             content_type="application/json")

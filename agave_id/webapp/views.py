@@ -45,6 +45,10 @@ def create_account(request):
     except Error as e:
         c['error'] = e.message
         return render_to_response("create_account.html", c)
+
+    if settings.CREATE_NOTIFICATIONS:
+        create_notification(user.username, 'ACCOUNT_REQUEST', 'guest')
+
     try:
         send_mail(settings.NEW_ACCOUNT_EMAIL_SUBJECT,
                   get_email_message(user),
@@ -80,7 +84,7 @@ def user_validate(request):
         except Exception as e:
             render_to_response('activation.html',{'error':'Unable to activate account.'})
         if settings.CREATE_NOTIFICATIONS:
-            create_notification(username, 'CREATED', 'jstubbs')
+            create_notification(username, 'CREATED', username)
         return render_to_response('activation.html',{'account_activated':'true'})
     else:
         return render_to_response('activation.html',{'error':'Invalid token'})

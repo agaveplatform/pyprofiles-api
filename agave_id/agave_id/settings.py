@@ -1,24 +1,20 @@
 from __future__ import unicode_literals
-__author__ = 'jstubbs'
+__author__ = 'deardooley'
 
 
 # Django settings for Agave identity provider project
 import os
 # from django_auth_ldap.config import LDAPSearch
 
-# sensitive settings: first look for 'deployment_settings', then 'local_settings',
-# finally 'local_settings_example' which should always be there
+# sensitive settings: first look for 'deployment_settings', then fall back on 'local_settings'
 try:
     from deployment_settings import *
 except:
-    try:
-        from local_settings import *
-    except:
-        from local_settings_example import *
+    from custom_settings import *
 
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE_DEBUG = DEBUG
+# TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = False
 
 
@@ -54,7 +50,7 @@ ALLOWED_HOSTS = ['*']
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -110,17 +106,17 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f051g-_7@!1l*hg#ilfa@op+z3+6ydlgb0%p(k-nb7ci7l!fb)'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+# # List of callables that know how to import templates from various sources.
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-     'django.contrib.messages.context_processors.messages',
-     'django.contrib.auth.context_processors.auth',
-)
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#      'django.contrib.messages.context_processors.messages',
+#      'django.contrib.auth.context_processors.auth',
+# )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -138,13 +134,18 @@ ROOT_URLCONF = 'agave_id.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'agave_id.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(CURRENT_DIR, 'templates'),
-    os.path.join(CURRENT_DIR, 'webapp', 'templates'),
-)
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(CURRENT_DIR, 'templates'),
+            os.path.join(CURRENT_DIR, 'webapp', 'templates'),
+            os.path.join(os.path.dirname(CURRENT_DIR), 'webapp', 'templates'),
+        ],
+        'APP_DIRS': True,
+    },
+]
 
 LOGIN_URL = 'login'
 
@@ -210,7 +211,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 try:
     from deployment_settings import *
 except:
-    try:
-        from local_settings import *
-    except:
-        from local_settings_example import *
+    from custom_settings import *

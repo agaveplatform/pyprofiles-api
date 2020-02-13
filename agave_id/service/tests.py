@@ -14,6 +14,8 @@ from __future__ import unicode_literals
 
 import os
 import sys
+import beanstalkc
+
 APP_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..')
 for idx, p in enumerate(sys.path):
     if p == APP_DIR:
@@ -32,15 +34,20 @@ from rest_framework.test import APITestCase
 
 from service.models import LdapUser
 from service.util import create_ldap_user, save_ldap_user
+from service.ou import create_ou
+from pycommon.notifications import build_profile_uuid, create_notification
 
 
 logger = logging.getLogger(__name__)
 
-APP_BASE = "http://localhost:8000/"
-APIM_BASE = "https://agave-am17-dev.tacc.utexas.edu/"
+APP_BASE = u"http://localhost:8000/"
 
 if settings.MULTI_TENANT:
     APP_BASE = APP_BASE + '1/'
+
+beanstalk = beanstalkc.Connection(host=settings.BEANSTALK_SERVER, port=settings.BEANSTALK_PORT)
+beanstalk.use(settings.BEANSTALK_TUBE)
+
 
 class Error(Exception):
     def __init__(self, message=None):
@@ -57,10 +64,10 @@ class LdapUserTests(APITestCase):
         try:
             user = LdapUser.objects.get(username="jdoe123")
             user.delete()
-        except:
+        except Exception as e:
             pass
         try:
-            user = LdapUser.objects.get(username="jdoe12345")
+            user = LdapUser.objects.get(username=u"jdoe12345")
             user.delete()
         except Exception as e:
             pass
@@ -68,6 +75,14 @@ class LdapUserTests(APITestCase):
             # users = LdapUser.objects.all()
             # for user in users:
             #     print user.username
+        try:
+            ou = u'tenant1'
+            create_ou(ou)
+        except Exception as e:
+            pass
+            # raise Error("Unable to set up test ou, tenant1; message: " + str(e.message))
+
+
         try:
             user = create_ldap_user(username=u"jdoe12345", password=u"abcde", email=u"jdoe12345@test.com")
             save_ldap_user(user=user)
@@ -82,15 +97,35 @@ class LdapUserTests(APITestCase):
 
     def tearDown(self):
         try:
-            user = LdapUser.objects.get(username="jdoe123")
+            user = LdapUser.objects.get(username=u"jdoe123")
             user.delete()
         except:
             pass
         try:
-            user = LdapUser.objects.get(username="jdoe12345")
+            user = LdapUser.objects.get(username=u"jdoe12345")
             user.delete()
         except:
             pass
+
+    def test_create_notification(self):
+        """
+        Create a notification
+        """
+        create_notification("jdoe123", "CREATED", 'testguest')
+
+        job = beanstalk.reserve(timeout=0)
+        data = json.loads(job.body)
+        user_uuid = build_profile_uuid("jdoe123")
+        self.assertEqual(data.uuid, user_uuid)
+        self.assertEqual(data.tenant, "agave.dev")
+        self.assertEqual(data.event, "CREATED")
+        self.assertEqual(data.owner, "")
+        self.assertEqual(data.context.username, "jdoe123")
+        self.assertEqual(data.context.uuid, user_uuid)
+
+        logging.debug("Message " + data + " placed on queue")
+
+        beanstalk.delete(job.jid)
 
 
     def test_user_create(self):
@@ -103,6 +138,18 @@ class LdapUserTests(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
         self.assertEqual(r.json().get("status"), "success")
         self.assertEqual(r.json().get("result").get("username"), "jdoe123")
+
+        job = beanstalk.reserve()
+        data = json.loads(job.body)
+        user_uuid = build_profile_uuid("jdoe123")
+        self.assertEqual(data.uuid, user_uuid)
+        self.assertEqual(data.tenant, "agave.dev")
+        self.assertEqual(data.event, "CREATED")
+        self.assertEqual(data.owner, "")
+        self.assertEqual(data.context.username, "jdoe123")
+        self.assertEqual(data.context.uuid, user_uuid)
+
+        logging.debug("Message " + data + " placed on queue")
 
     def test_user_update_pass(self):
         url = APP_BASE + "users/jdoe12345/"
