@@ -101,8 +101,8 @@ class LdapUserTests(APITestCase):
         data = {"username":"jdoe123", "password":"abcde", "email":"jdoe123@test.com"}
         r = self.client.post(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe123")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe123")
 
     def test_user_update_pass(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -110,8 +110,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Error updating user: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_special_chars(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -119,8 +119,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Error updating user: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_five_spaces(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -128,8 +128,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Error updating user: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
 
     def test_user_update_pass_not_too_short(self):
@@ -138,8 +138,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_prev(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -149,8 +149,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_prev5(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -167,8 +167,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_prev6_ok(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -188,8 +188,8 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Error updating user: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_username_1(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -198,16 +198,16 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_username_2(self):
         url = APP_BASE + "users/jdoe12345/"
         # passwords can contain username with different case:
         data = {"password":"zzJDOE", "email":"jdoe12345@test.com"}
         r = self.client.put(url, data, format="json", **self.extra)
-        self.assertEqual(r.data.get("status"), "success")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_username_ok1(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -216,9 +216,9 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        # print r.data.get("message")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        # print r.json().get("message")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
     def test_user_update_pass_username_ok2(self):
         url = APP_BASE + "users/jdoe12345/"
@@ -228,9 +228,9 @@ class LdapUserTests(APITestCase):
         r = self.client.put(url, data, format="json", **self.extra)
         self.assertEqual(r.status_code, 201, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        # print r.data.get("message")
-        self.assertEqual(r.data.get("result").get("username"), "jdoe12345")
+        self.assertEqual(r.json().get("status"), "success")
+        # print r.json().get("message")
+        self.assertEqual(r.json().get("result").get("username"), "jdoe12345")
 
 
     def test_list_users(self):
@@ -238,8 +238,8 @@ class LdapUserTests(APITestCase):
         r = self.client.get(url, format="json", **self.extra)
         self.assertEqual(r.status_code, 200, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        result = r.data.get("result")
+        self.assertEqual(r.json().get("status"), "success")
+        result = r.json().get("result")
         found = False
         for user in result:
             assert not 'password' in user
@@ -252,9 +252,9 @@ class LdapUserTests(APITestCase):
         r = self.client.get(url, format="json", **self.extra)
         self.assertEqual(r.status_code, 200, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        username = r.data.get("result").get("username")
-        assert not 'password' in r.data.get("result")
+        self.assertEqual(r.json().get("status"), "success")
+        username = r.json().get("result").get("username")
+        assert not 'password' in r.json().get("result")
         self.assertEqual(username, "jdoe12345")
 
     def test_get_me_user_details(self):
@@ -266,9 +266,9 @@ class LdapUserTests(APITestCase):
         r = self.client.get(url, format="json", **self.extra)
         self.assertEqual(r.status_code, 200, "Wrong status code: " + str(r.status_code)
                                              + " response: " + r.content)
-        self.assertEqual(r.data.get("status"), "success")
-        username = r.data.get("result").get("username")
-        assert not 'password' in r.data.get("result")
+        self.assertEqual(r.json().get("status"), "success")
+        username = r.json().get("result").get("username")
+        assert not 'password' in r.json().get("result")
         self.assertEqual(username, "jstubbs")
 
 
