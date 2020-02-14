@@ -5,7 +5,7 @@ version: '3'
 
 services:
   agaveid:
-    image: agave_id_dedicated:develop
+    image: pyprofiles-api:develop
     # Uncomment the following line (and comment the build line just above) to build from source
     build:
       context: ../
@@ -25,34 +25,34 @@ services:
       DJANGO_SETTINGS_MODULE: agave_id.settings
       IPLANT_MESSAGING_HOST: beanstalkd
       AGAVE_AUTH_TYPE: noauth
-#      use_custom_ldap: 'true'
-#      auth_ldap_bind_dn: 'cn=admin,ou=tenantsandbox,dc=agaveplatform,dc=org'
-#      auth_ldap_bind_password: 'p@ssword'
-#      ldap_base_search_dn: 'ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org'
-#
-#  ldap:
-#    image: osixia/openldap:1.2.5
-#    command:
-#      - "--copy-service"
-#    restart: always
-#    ports:
-#      - "10389:389"
-#    environment:
-#      LDAP_DOMAIN: agaveplatform.org
-#      LDAP_ORGANISATION: Agave
-#      LDAP_ADMIN_PASSWORD: p@ssword
-#      LDAP_TLS: "false"
-#    volumes:
-#      - ./ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+      use_custom_ldap: 'true'
+      auth_ldap_bind_dn: 'cn=admin,dc=agaveplatform,dc=org'
+      auth_ldap_bind_password: 'p@ssword'
+      ldap_base_search_dn: 'ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org'
 
   ldap:
-    image: jstubbs/slapd
-    environment:
-      - LDAP_DOMAIN=agaveapi
-      - LDAP_ORGANISATION="Agave"
-      - LDAP_ROOTPASS=p@ssword
+    image: osixia/openldap:1.2.5
+    command:
+      - "--copy-service"
+    restart: always
     ports:
       - "10389:389"
+    environment:
+      LDAP_DOMAIN: agaveplatform.org
+      LDAP_ORGANISATION: Agave
+      LDAP_ADMIN_PASSWORD: p@ssword
+      LDAP_TLS: "false"
+    volumes:
+      - ./ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+
+#  ldap:
+#    image: jstubbs/slapd
+#    environment:
+#      - LDAP_DOMAIN=agaveapi
+#      - LDAP_ORGANISATION="Agave"
+#      - LDAP_ROOTPASS=p@ssword
+#    ports:
+#      - "10389:389"
 
 
 
@@ -72,7 +72,7 @@ services:
       WEB_PASS: password
 
 
-  beanstalk:
+  beanstalkd:
     image: agaveplatform/beanstalkd
     restart: always
     ports:

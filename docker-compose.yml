@@ -5,7 +5,7 @@ version: '3'
 
 services:
   agaveid:
-    image: agave_id_dedicated:develop
+    image: pyprofiles-api:develop
     # Uncomment the following line (and comment the build line just above) to build from source
     build:
       context: .

@@ -31,6 +31,7 @@ class LdapUser(ldapdb.models.Model):
     nonce = CharField(db_column=u'employeeNumber', blank=True)
     status = CharField(db_column=u'employeeType', blank=True)
     create_time = CharField(db_column=u'createTimestamp', blank=True)
+    organization_name = CharField(db_column=u'organizationName', blank=True)
 
     # posixAccount
     uid = IntegerField(db_column=u'uidNumber', unique=True, blank=True)

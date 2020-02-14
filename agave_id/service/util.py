@@ -13,6 +13,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from pycommon.error import Error
+from pycommon.util import camel_to_underscore
 
 from service.models import LdapUser
 
@@ -136,12 +137,19 @@ def save_ldap_user(user=None, serializer=None):
 
 def get_filter(request):
     """Return filter:value from request query parameters"""
-    filters = ['name', 'email', 'first_name', 'last_name', 'full_name', 'status', 'username', ]
+    filters = ['name', 'email', 'firstName', 'first_name', 'lastName', 'last_name', 'fullName', 'full_name', 'status', 'username', 'organization_name','organizationName']
     for f in filters:
         if request.GET.get(f):
-            if f == 'name':
+            if f == 'name' or f == 'fullName':
                 return {'full_name': request.GET.get(f)}
-            return {f: request.GET.get(f)}
+            elif f == 'firstName':
+                return {'first_name': request.GET.get(f)}
+            elif f == 'lastName':
+                return {'last_name': request.GET.get(f)}
+            elif f == 'organizationName':
+                return {'organization_name': request.GET.get(f)}
+            else:
+                return {f: request.GET.get(f)}
     return None
 
 
@@ -199,3 +207,15 @@ def multi_tenant_setup(tenant):
     if not tenant:
         raise Error("Tenant-id required.")
     LdapUser.base_dn = get_base_dn(tenant)
+
+def force_fields_to_snake_case(request_data):
+    if not request_data:
+        return {}
+
+    # copy the dict, converting all camel cased keys to
+    # snake case
+    snake_case_dict = {}
+    for key, val in request_data.iteritems():
+        snake_case_dict[camel_to_underscore(key)] = val
+
+    return snake_case_dict
