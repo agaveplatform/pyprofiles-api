@@ -1,0 +1,45 @@
+# Group for super admin users
+dn: cn=admin,ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+cn: admin
+description: Global administators with super user permissions
+objectClass: groupofnames
+member: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+
+dn: cn=sandbox-tenant-admin,ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+cn: sandbox-tenant-admin
+description: Tenant management administrators
+objectClass: groupofnames
+member: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+
+dn: cn=sandbox-services-admin,ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+cn: sandbox-services-admin
+description: Tenant wide API administrators
+objectClass: groupofnames
+member: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+
+dn: cn=impersonator,ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+cn: impersonator
+description: Users with permission to impersonate other users
+objectClass: groupofnames
+member: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+
+dn: cn=sandbox-user-account-manager,ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+cn: sandbox-user-account-manager
+description: Users with permission to create and manage other user accounts
+objectClass: groupofnames
+member: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+
+# User group for testuser user
+dn: cn=testers,ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+cn: testers
+objectClass: groupofnames
+member: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+member: uid=testuser,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+member: uid=testshareuser,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+member: uid=testotheruser,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org

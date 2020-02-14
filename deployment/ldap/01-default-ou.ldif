@@ -1,0 +1,19 @@
+# Tenant organization units
+dn: ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+description: Base organization for the sandbox tenant
+objectClass: organizationalUnit
+ou: tenantsandbox
+
+# User and group organization units
+dn: ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+description: Base organization all sandbox users
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=Groups,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+description: Base organization all sandbox groups
+objectClass: organizationalUnit
+ou: groups
