@@ -97,17 +97,6 @@ class Users(APIView):
             util.multi_tenant_setup(tenant)
         filter_dict = util.get_filter(request)
 
-        # update page size for the result set if the user requests it
-        limit = settings.DEFAULT_PAGE_SIZE
-        if request.GET.get('limit'):
-            limit = min(int(request.GET.get('limit')), settings.DEFAULT_PAGE_SIZE)
-        #     settings.DATABASES['ldap']['CONNECTION_OPTIONS']['page_size'] = limit
-        #     db.connections['ldap'].close()  # Force connection reload
-
-        offset = 0
-        if request.GET.get('offset'):
-            offset = max(offset, int(request.GET.get('offset')))
-
         try:
             if filter_dict:
                 qs = LdapUser.objects.filter(**filter_dict)
@@ -117,8 +106,8 @@ class Users(APIView):
             logger.error("Got exception trying to retrieve users; e: {}".format(e))
             return Response(error_dict(msg="Error retrieving users: " + str(e)))
         limit, offset = util.get_page_parms(request)
-        if limit > 0:
-            users = qs[offset: offset+limit]
+        users = qs[offset: offset+limit]
+        users = qs[0:limit]
         serializer = LdapUserSerializer(users, many=True)
         db.close_old_connections()
         return HttpResponse(format_response(serializer.data, msg="Users retrieved successfully.", query_dict=request.GET),
