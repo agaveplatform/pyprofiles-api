@@ -96,17 +96,29 @@ class Users(APIView):
         if settings.MULTI_TENANT:
             util.multi_tenant_setup(tenant)
         filter_dict = util.get_filter(request)
+
+        # update page size for the result set if the user requests it
+        limit = settings.DEFAULT_PAGE_SIZE
+        if request.GET.get('limit'):
+            limit = min(int(request.GET.get('limit')), settings.DEFAULT_PAGE_SIZE)
+        #     settings.DATABASES['ldap']['CONNECTION_OPTIONS']['page_size'] = limit
+        #     db.connections['ldap'].close()  # Force connection reload
+
+        offset = 0
+        if request.GET.get('offset'):
+            offset = max(offset, int(request.GET.get('offset')))
+
         try:
             if filter_dict:
-                users = LdapUser.objects.filter(**filter_dict)
+                qs = LdapUser.objects.filter(**filter_dict)
             else:
-                users = LdapUser.objects.all()
+                qs = LdapUser.objects.all()
         except Exception as e:
             logger.error("Got exception trying to retrieve users; e: {}".format(e))
             return Response(error_dict(msg="Error retrieving users: " + str(e)))
         limit, offset = util.get_page_parms(request)
         if limit > 0:
-            users = users[offset: offset+limit]
+            users = qs[offset: offset+limit]
         serializer = LdapUserSerializer(users, many=True)
         db.close_old_connections()
         return HttpResponse(format_response(serializer.data, msg="Users retrieved successfully.", query_dict=request.GET),
@@ -135,7 +147,8 @@ class Users(APIView):
         if settings.CHECK_JWT and settings.CHECK_USER_ADMIN_ROLE and not request.service_admin:
             return Response(error_dict(msg="Access denied.", query_dict=request.GET), status=status.HTTP_401_UNAUTHORIZED)
 
-        serializer = LdapUserSerializer(data=request.data)
+        post_data = util.force_fields_to_snake_case(request.data)
+        serializer = LdapUserSerializer(data=post_data)
         valid = serializer.is_valid()
         logger.debug("got {} from serializer.is_valid()".format(valid))
 
@@ -250,9 +263,10 @@ class UserDetails(APIView):
             db.close_old_connections()
             return Response(error_dict(msg="Error retrieving user details: account not found.", query_dict=request.GET),
                             status=status.HTTP_404_NOT_FOUND)
+
         # we need to add username to the dictionary for serialization, but request.data is
         # immutable for PUT requests from some clients (e.g.curl)
-        data = request.data.copy()
+        data = util.force_fields_to_snake_case(request.data)
         data['username'] = user.username
         serializer = LdapUserSerializer(user, data=data)
         if serializer.is_valid():
@@ -263,6 +277,10 @@ class UserDetails(APIView):
                 return Response(error_dict(msg=e.message, query_dict=request.GET), status.HTTP_400_BAD_REQUEST)
             finally:
                 db.close_old_connections()
+
+            if settings.CREATE_NOTIFICATIONS:
+                create_notification(username, "UPDATED", request.username or 'guest')
+
             return HttpResponse(format_response(serializer.data,
                                          msg="User updated successfully.", query_dict=request.GET),
                             status=status.HTTP_201_CREATED,

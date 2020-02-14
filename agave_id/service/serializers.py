@@ -20,7 +20,7 @@ class LdapUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LdapUser
         fields = ('first_name', 'last_name', 'full_name', 'email', 'phone', 'mobile_phone', 'nonce', 'status', 'create_time',
-                  'uid', 'username', 'password')
+                  'uid', 'username', 'password', 'organization_name')
         depth = 1
 
     def validate(self, attrs):
@@ -46,6 +46,7 @@ class LdapUserSerializer(serializers.ModelSerializer):
             attrs['status'] = attrs.get('status')
         else:
             attrs['status'] = settings.ACTIVE_STATUS
+
         attrs['nonce'] = str(random.randrange(0, 999999999))
         # attrs['create_time'] = time.strftime('%Y %m %d %H %M %S', time.localtime()).replace(" ", "") + "Z"
         # attrs['create_time'] = time.strftime('%Y %m %d', time.localtime()).replace(" ", "")
@@ -79,9 +80,12 @@ class LdapUserSerializer(serializers.ModelSerializer):
         instance.username = attrs.get('username', instance.username)
         instance.password = attrs.get('password', instance.password)
         instance.full_name = attrs.get('full_name', instance.full_name)
+        instance.organization_name = attrs.get('organization_name', instance.organization_name)
         return instance
 
     def to_representation(self, obj):
         ret = super(LdapUserSerializer, self).to_representation(obj)
         ret.pop('password', None)
+        self_href = "{}/profiles/v2/{}".format(settings.APP_BASE, obj.username)
+        ret['_links'] = { 'self': { 'href':  self_href } }
         return ret

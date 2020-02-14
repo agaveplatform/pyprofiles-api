@@ -1,9 +1,9 @@
-# The following fig.yml file starts up the agave_id service in multi-tenant mode. It defaults to
-# using an image, but you can also build from source if you prefer. You will need to endure that
+# The following docker compose file starts up the pyprofiles-api service in multi-tenant mode. It defaults to
+# using an image, but you can also build from source if you prefer. You will need to ensure that
 # MULTI_TENANT=True is set in your local_settings.py file first.
 
 agaveid:
-  image: jstubbs/agave_id_multi
+  image: pyprofiles-api:develop
   # Uncomment the following line (and comment the build line just above) to build from source
 #  build: ../
   ports:
