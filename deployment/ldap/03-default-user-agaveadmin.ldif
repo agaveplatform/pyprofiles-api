@@ -1,0 +1,23 @@
+# User account for api admin activity
+dn: uid=agaveadmin,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+description: agaveadmin is the default test user for new platform deployments.
+givenName: API
+sn: Admin
+cn: API Admin
+mail: agaveadmin@example.com
+telephoneNumber: 512-647-4813
+mobile: 972-504-6270
+employeeType: ACTIVE
+uid: agaveadmin
+uidNumber: 6161
+gidNumber: 6161
+homeDirectory: /home/agaveadmin
+loginShell: /bin/bash
+userPassword: agaveadmin

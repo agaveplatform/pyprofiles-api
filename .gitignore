@@ -4,4 +4,3 @@ deployment/*.log
 .idea/*
 venv
 deployment/logs
-deployment/ldap

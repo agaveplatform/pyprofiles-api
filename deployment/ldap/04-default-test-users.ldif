@@ -1,0 +1,71 @@
+# User account for testuser user
+dn: uid=testuser,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+description: Test User is the default test user for new platform deployments.
+givenName: Test
+sn: User
+cn: Test User
+mail: testuser@example.com
+telephoneNumber: 512-647-4813
+mobile: 972-504-6270
+employeeType: ACTIVE
+uid: testuser
+uidNumber: 6162
+gidNumber: 6162
+homeDirectory: /home/testuser
+loginShell: /bin/bash
+userPassword: testuser
+
+# User account for testshareuser user
+dn: uid=testshareuser,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+description: Test Share User is the default test share user for new platform deployments.
+givenName: Test Share
+sn: User
+cn: Test Share User
+mail: testshareuser@example.com
+telephoneNumber: 512-647-4813
+mobile: 972-504-6270
+employeeType: ACTIVE
+uid: testshareuser
+uidNumber: 6163
+gidNumber: 6163
+homeDirectory: /home/testshareuser
+loginShell: /bin/bash
+userPassword: testshareuser
+
+# User account for testotheruser user
+dn: uid=testotheruser,ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org
+changetype: add
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+description: Test Other User is the default unshared user for new platform deployments.
+givenName: Test Other
+sn: User
+cn: Test Other User
+mail: testotheruser@example.com
+telephoneNumber: 512-647-4813
+mobile: 972-504-6270
+employeeType: ACTIVE
+uid: testotheruser
+uidNumber: 6164
+gidNumber: 6164
+homeDirectory: /home/testotheruser
+loginShell: /bin/bash
+userPassword: testotheruser
