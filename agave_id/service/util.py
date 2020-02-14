@@ -160,8 +160,11 @@ def get_page_parms(request):
         limit = int(limit)
     except ValueError:
         limit = -1
-    if limit < -1:
-        limit = -1
+    if limit <= -1:
+        limit = settings.DEFAULT_PAGE_SIZE
+    elif limit > settings.MAX_PAGE_SIZE:
+        limit = settings.MAX_PAGE_SIZE
+
     offset = request.GET.get('offset', -1)
     try:
         offset = int(offset)
