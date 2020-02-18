@@ -4,12 +4,12 @@ __author__ = 'jstubbs'
 
 import logging
 import random
-import time
+from datetime import datetime
 from django.conf import settings
 from rest_framework import serializers
 
 from service.models import LdapUser
-
+from pycommon.notifications import build_profile_uuid
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,14 @@ class LdapUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         ret = super(LdapUserSerializer, self).to_representation(obj)
+        # Remove password for obvious reasons
         ret.pop('password', None)
+        # Remove nonce from string so others cannot active accounts via the activation page
+        ret.pop('nonce', None)
+        # formate create_time field to a proper ISO8601 formatted date time string
+        formatted_create_time = datetime.strptime(ret['create_time'], '%Y%m%d%H%M%SZ').strftime("%Y-%m-%dT%H:%M:%SZ")
+        ret['create_time'] = formatted_create_time
+        ret['uuid'] = build_profile_uuid(obj.username)
         self_href = "{}/profiles/v2/{}".format(settings.APP_BASE, obj.username)
         ret['_links'] = { 'self': { 'href':  self_href } }
         return ret

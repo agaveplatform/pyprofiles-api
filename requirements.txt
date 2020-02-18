@@ -3,6 +3,7 @@ django-cors-headers
 django-ldapdb
 djangorestframework
 python-ldap
+gunicorn
 #/Users/dooley/agave/api/starters/agave-pycommon
 -e git+https://github.com/agaveplatform/agave-pycommon#egg=pycommon
 

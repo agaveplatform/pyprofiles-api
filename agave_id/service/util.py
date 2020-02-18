@@ -20,10 +20,11 @@ from service.models import LdapUser
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-TENANTS = {'araport-org': {'base_dn':'ou=tenantaraport-org,' + settings.LDAP_BASE_SEARCH_DN},
-           'vdj-org': {'base_dn':'ou=tenant5,' + settings.LDAP_BASE_SEARCH_DN},
-           'irec': {'base_dn':'ou=tenantirec,' + settings.LDAP_BASE_SEARCH_DN},
-           }
+TENANTS = {
+    'araport-org': {'base_dn':'ou=tenantaraport-org,' + settings.LDAP_BASE_SEARCH_DN},
+    'vdj-org': {'base_dn':'ou=tenant5,' + settings.LDAP_BASE_SEARCH_DN},
+    'irec': {'base_dn':'ou=tenantirec,' + settings.LDAP_BASE_SEARCH_DN},
+}
 
 def audit_ldap_user(user):
     """
