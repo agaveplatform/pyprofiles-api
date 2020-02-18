@@ -37,5 +37,6 @@ ADD deployment/apache2.conf /etc/apache2/sites-enabled/000-default.conf
 ADD deployment/apim_default.pub  /home/apim/public_keys/apim_default.pub
 
 EXPOSE 80
-
+#WORKDIR /code/agave_id/
+#CMD gunicorn -w 4 -b :80 agave_id.wsgi
 CMD /usr/sbin/apache2ctl -D FOREGROUND
