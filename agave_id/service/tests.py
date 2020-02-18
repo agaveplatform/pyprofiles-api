@@ -323,9 +323,3 @@ def http_auth(username, password):
     credentials = base64.encodestring('%s:%s' % (username, password)).strip()
     auth_string = 'Basic %s' % credentials
     return auth_string
-
-8006377439
-8006377435
-
-3525.20
-meera sharma
