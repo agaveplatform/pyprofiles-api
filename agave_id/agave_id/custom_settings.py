@@ -79,8 +79,8 @@ CHECK_USER_ADMIN_ROLE = False
 APP_BASE = os.environ.get('APP_BASE', u'http://localhost:8000')
 
 # Enable using forwarding headers when running behind proxy
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', u'https')
+#USE_X_FORWARDED_HOST = False
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', u'https')
 
 # DEBUG = True turns up logging and causes Django to generate exception pages with stack traces and
 # additional information. Should be False in production.
@@ -134,9 +134,9 @@ TENANT_ID = os.environ.get('AGAVE_DEDICATED_TENANT_ID')
 if not TENANT_ID:
     TENANT_ID = os.environ.get('tenant_id', 'agave.dev')
 
-API_VERSION = os.environ.get('AGAVE_API_VERSION')
+API_VERSION = os.environ.get('AGAVE_API_VERSION', os.environ.get('AGAVE_VERSION'))
 if not API_VERSION:
-    API_VERSION = os.environ.get('api_version', '2.2.26-develop')
+    API_VERSION = os.environ.get('api_version', '2.2.27-develop')
 
 
 if os.path.exists(os.path.join(HERE, 'running_in_docker')):

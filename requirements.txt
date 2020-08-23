@@ -5,4 +5,3 @@ djangorestframework
 python-ldap
 #/Users/dooley/agave/api/starters/agave-pycommon
 -e git+https://github.com/agaveplatform/agave-pycommon#egg=pycommon
-
