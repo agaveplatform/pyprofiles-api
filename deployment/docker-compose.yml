@@ -29,6 +29,12 @@ services:
       auth_ldap_bind_dn: 'cn=admin,dc=agaveplatform,dc=org'
       auth_ldap_bind_password: 'p@ssword'
       ldap_base_search_dn: 'ou=People,ou=tenantsandbox,dc=agaveplatform,dc=org'
+      MAIL_SMTPS_HOST: emaildevbox
+      MAIL_SMTPS_USER: agavedeveloper
+      MAIL_SMTPS_PASSWD: somepassword
+      MAIL_SMTPS_PORT: 25
+      MAIL_SMTPS_FROM_NAME: Agave Dev Platform
+      MAIL_SMTPS_FROM_ADDRESS: dev@null.com
 
   ldap:
     image: osixia/openldap:1.2.5
@@ -56,20 +62,20 @@ services:
 
 
 
-  maildev:
+  emaildevbox:
     image: agaveplatform/maildev:latest
     ports:
       - "8001:80"
-      - "10025:25"
+      - "10587:25"
     environment:
       # SMTP username to connect to the server
-      INCOMING_USERNAME: agavedev
+      INCOMING_USERNAME: agavedeveloper
       # SMTP password to connect to the server
-      INCOMING_PASSWORD: password
+      INCOMING_PASSWORD: somepassword
       # web ui username
-      WEB_USER: maildev
+      WEB_USER: maildeveloper
       # web ui password
-      WEB_PASS: password
+      WEB_PASS: otherpassword
 
 
   beanstalkd:

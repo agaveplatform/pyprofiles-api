@@ -37,7 +37,7 @@ def create_account(request):
         c['error'] = e.message
         return render_to_response('create_account.html', c)
     if not request.POST.get("password2") == user.password:
-        c['error'] = "Passwords do not match."
+        c['error'] = "Passwords do not match. "
         return render_to_response('create_account.html', c)
     try:
         user.password = user.password + KEY + user.nonce
@@ -50,16 +50,19 @@ def create_account(request):
         create_notification(user.username, 'ACCOUNT_REQUEST', 'guest')
 
     try:
-        send_mail(settings.NEW_ACCOUNT_EMAIL_SUBJECT,
-                  get_email_message(user),
-                  settings.NEW_ACCOUNT_FROM,
-                  (user.email, ))
+        send_mail(subject=settings.NEW_ACCOUNT_EMAIL_SUBJECT,
+                  message=get_email_message(user),
+                  from_email=settings.NEW_ACCOUNT_FROM,
+                  recipient_list=(user.email, ),
+                  fail_silently=False,
+                  auth_user=settings.EMAIL_HOST_USER,
+                  auth_password=settings.EMAIL_HOST_PASS)
     except Exception as e:
         # delete LdapUser object manually since transaction manager isn't
         # working for ldapdb :-(
         user.delete()
 #         transaction.rollback()
-        c['error'] = 'Error sending activation email.' + str(e)
+        c['error'] = 'Error sending activation email. ' + str(e)
         return render_to_response("create_account.html", c)
     c['account_created'] = True
     transaction.commit()

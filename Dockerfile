@@ -3,15 +3,15 @@
 FROM agaveplatform/template_compiler
 MAINTAINER Rion Dooley
 
-RUN touch /fooy
 RUN apt-get update
-RUN apt-get install -y python python-dev python-pip git libldap2-dev libsasl2-dev \
+RUN apt-get install -y python python-dev git libldap2-dev libsasl2-dev curl jq \
 		apache2 apache2-utils libexpat1 ssl-cert libapache2-mod-wsgi lynx ldap-utils
 
 ADD deployment/ldap.conf /etc/ldap/ldap.conf
 
-RUN mkdir -p /code /Users/dooley/agave/api/starters && \
-		pip install -U pip
+RUN mkdir -p /code && \
+		curl -skL https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py   && \
+		python2 get-pip.py
 ADD requirements.txt /code/
 RUN pip install -r /code/requirements.txt
 
